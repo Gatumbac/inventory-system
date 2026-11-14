@@ -1,0 +1,72 @@
+# .NET
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userprefs
+*.rsuser
+.vs/
+TestResults/
+*.log
+*.trx
+coverage*.xml
+*.nupkg
+.dotnet/
+
+# Serilog file sinks
+logs/
+Logs/
+
+# EF Core local artifacts
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
+
+# Angular / Node
+node_modules/
+dist/
+out-tsc/
+.angular/
+.sass-cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+/coverage/
+/.nyc_output/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.pfx
+*.pem
+*.key
+
+# Docker
+docker-compose.override.yml
+.docker/
+*.pid
+
+# IDEs and editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini

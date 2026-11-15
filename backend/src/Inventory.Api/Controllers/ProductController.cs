@@ -38,7 +38,7 @@ public class ProductController : ControllerBase
         var response = await _productService.GetProductAsync(id);
         if (response == null)
         {
-            return NotFound();
+            return Problem(statusCode: StatusCodes.Status404NotFound, title: ErrorMessages.ProductNotFound);
         }
 
         return Ok(response);
@@ -75,7 +75,7 @@ public class ProductController : ControllerBase
         var result = await _productService.UpdateProductAsync(id, productRequest);
         if (result.Status == SaveProductStatus.NotFound)
         {
-            return NotFound();
+            return Problem(statusCode: StatusCodes.Status404NotFound, title: ErrorMessages.ProductNotFound);
         }
 
         if (result.Status == SaveProductStatus.DuplicateCode)
@@ -98,7 +98,7 @@ public class ProductController : ControllerBase
         var response = await _productService.RemoveProductAsync(id);
         if (response == DeleteProductResult.NotFound)
         {
-            return NotFound();
+            return Problem(statusCode: StatusCodes.Status404NotFound, title: ErrorMessages.ProductNotFound);
         }
 
         if (response == DeleteProductResult.HasSuppliers)

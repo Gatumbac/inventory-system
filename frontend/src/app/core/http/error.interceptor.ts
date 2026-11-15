@@ -36,7 +36,7 @@ function messageFor(error: HttpErrorResponse, isLogin: boolean): string {
     case 0:
       return 'No hay conexión con el servidor';
     case 400:
-      return 'Datos inválidos';
+      return firstValidationMessage(error) ?? 'Datos inválidos';
     case 401:
       return isLogin ? 'Credenciales inválidas' : 'Sesión expirada';
     case 403:
@@ -44,4 +44,9 @@ function messageFor(error: HttpErrorResponse, isLogin: boolean): string {
     default:
       return error.error?.title ?? 'Error inesperado';
   }
+}
+
+function firstValidationMessage(error: HttpErrorResponse): string | undefined {
+  const errors = error.error?.errors as Record<string, string[]> | undefined;
+  return errors ? Object.values(errors).flat()[0] : undefined;
 }

@@ -9,7 +9,12 @@ export const routes: Routes = [
     component: Shell,
     canActivate: [authGuard],
     children: [
-      { path: '', loadComponent: () => import('./features/home/home').then((m) => m.Home) },
+      { path: '', pathMatch: 'full', redirectTo: 'products' },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./features/products/product-list/product-list').then((m) => m.ProductList),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

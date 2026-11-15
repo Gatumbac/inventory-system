@@ -1,6 +1,7 @@
 using Inventory.Core.Abstractions;
 using Inventory.Core.Dtos;
 using Inventory.Core.Entities;
+using Inventory.Core.Results;
 
 namespace Inventory.Core.Services;
 
@@ -56,6 +57,23 @@ public class ProductService : IProductService
 
         await _products.SaveChangesAsync();
         return ToProductResponse(product);
+    }
+
+    public async Task<DeleteProductResult> RemoveProductAsync(int id)
+    {
+        var product = await _products.GetByIdForUpdateAsync(id);
+        if (product == null)
+        {
+            return DeleteProductResult.NotFound;
+        }
+
+        if (await _products.HasSuppliersAsync(id))
+        {
+            return DeleteProductResult.HasSuppliers;
+        }
+
+        await _products.RemoveAsync(product);
+        return DeleteProductResult.Deleted;
     }
 
     private ProductResponse ToProductResponse(Product product)

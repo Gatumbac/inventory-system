@@ -1,4 +1,5 @@
 using Inventory.Core.Dtos;
+using Inventory.Core.Results;
 
 namespace Inventory.Core.Abstractions;
 
@@ -8,4 +9,5 @@ public interface IProductService
     Task<ProductResponse?> GetProductAsync(int id);
     Task<ProductResponse> CreateProductAsync(ProductRequest productRequest);
     Task<ProductResponse?> UpdateProductAsync(int id, ProductRequest productRequest);
+    Task<DeleteProductResult> RemoveProductAsync(int id);
 }

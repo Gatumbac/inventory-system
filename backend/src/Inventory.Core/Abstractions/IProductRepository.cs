@@ -9,4 +9,6 @@ public interface IProductRepository
     Task AddAsync(Product product);
     Task<Product?> GetByIdForUpdateAsync(int id);
     Task SaveChangesAsync();
+    Task RemoveAsync(Product product);
+    Task<bool> HasSuppliersAsync(int productId);
 }

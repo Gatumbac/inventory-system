@@ -1,6 +1,7 @@
 using Inventory.Core.Abstractions;
 using Inventory.Core.Constants;
 using Inventory.Core.Dtos;
+using Inventory.Core.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,5 +71,28 @@ public class ProductController : ControllerBase
         }
 
         return Ok(response);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = RoleNames.Admin)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> RemoveProduct(int id)
+    {
+        var response = await _productService.RemoveProductAsync(id);
+        if (response == DeleteProductResult.NotFound)
+        {
+            return NotFound();
+        }
+
+        if (response == DeleteProductResult.HasSuppliers)
+        {
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: "No se puede eliminar un producto con proveedores asociados");
+        }
+
+        return NoContent();
     }
 }

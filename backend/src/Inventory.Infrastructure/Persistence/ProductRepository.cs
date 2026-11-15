@@ -46,4 +46,15 @@ public class ProductRepository : IProductRepository
     {
         await _context.SaveChangesAsync();
     }
+
+    public async Task RemoveAsync(Product product)
+    {
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> HasSuppliersAsync(int productId)
+    {
+        return await _context.ProductSuppliers.AnyAsync(ps => ps.ProductId == productId);
+    }
 }

@@ -41,13 +41,19 @@ builder.Services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
 builder.Services.AddSingleton<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<IProductSupplierRepository, ProductSupplierRepository>();
+builder.Services.AddScoped<IProductSupplierService, ProductSupplierService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.MapInboundClaims = false;
-        options.TokenValidationParameters = new TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuer = true,
             ValidateAudience = true,
@@ -63,6 +69,7 @@ builder.Services
 
 builder.Services.AddDbContext<AppDbContext>(options => options
     .UseSqlServer(connectionString)
+    .AddInterceptors(new AuditSaveChangesInterceptor())
     .UseSeeding((context, _) => DbSeeder.Seed(context, builder.Configuration, new IdentityPasswordHasher())));
 
 builder.Services.AddControllers();
@@ -70,13 +77,13 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT"
     });
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement()
     {
         [new OpenApiSecuritySchemeReference("Bearer", document)] = []
     });

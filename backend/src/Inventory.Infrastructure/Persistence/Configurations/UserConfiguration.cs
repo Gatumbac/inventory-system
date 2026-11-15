@@ -12,7 +12,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.LastName).IsRequired().HasMaxLength(100);
         builder.Property(u => u.Email).IsRequired().HasMaxLength(255);
         builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);
-        builder.HasIndex(u => u.Email).IsUnique();
+        builder.HasIndex(u => u.Email).IsUnique().HasFilter("[DeletedAt] IS NULL");
+        builder.HasQueryFilter(u => u.DeletedAt == null);
 
         builder.HasOne(u => u.Role)
             .WithMany(r => r.Users)

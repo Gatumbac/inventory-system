@@ -11,6 +11,7 @@ public class ProductAttributeConfiguration : IEntityTypeConfiguration<ProductAtt
         builder.Property(a => a.Name).IsRequired().HasMaxLength(100);
         builder.Property(a => a.Value).IsRequired().HasMaxLength(200);
         builder.HasIndex(a => new { a.ProductId, a.Name }).IsUnique();
+        builder.HasQueryFilter(a => a.Product.DeletedAt == null);
 
         builder.HasOne(a => a.Product)
             .WithMany(p => p.Attributes)

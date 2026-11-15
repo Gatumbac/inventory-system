@@ -17,6 +17,28 @@ public static class DbSeeder
 
         EnsureUser(context, hasher, "Admin", "System", adminEmail, adminPassword, RoleNames.Admin);
         EnsureUser(context, hasher, "Viewer", "System", viewerEmail, viewerPassword, RoleNames.Viewer);
+
+        EnsureSupplier(context, "Distribuidora Andina", "Electrónica y accesorios");
+        EnsureSupplier(context, "Importadora del Pacifico", "Artículos para el hogar y la oficina");
+        EnsureSupplier(context, "Suministros Guayaquil", "Ferretería y herramientas");
+    }
+
+    private static void EnsureSupplier(DbContext context, string name, string description)
+    {
+        var suppliers = context.Set<Supplier>();
+        if (suppliers.Any(s => s.Name == name))
+        {
+            return;
+        }
+
+        var supplier = new Supplier()
+        {
+            Name = name,
+            Description = description
+        };
+
+        suppliers.Add(supplier);
+        context.SaveChanges();
     }
 
     private static string GetSetting(IConfiguration configuration, string key)
@@ -45,9 +67,22 @@ public static class DbSeeder
             return;
         }
 
+        users.Add(BuildUser(context, hasher, name, lastName, email, password, roleName));
+        context.SaveChanges();
+    }
+
+    private static User BuildUser(
+        DbContext context,
+        IPasswordHasher hasher,
+        string name,
+        string lastName,
+        string email,
+        string password,
+        string roleName)
+    {
         var roleId = context.Set<Role>().Single(r => r.Name == roleName).Id;
 
-        var user = new User
+        var user = new User()
         {
             Name = name,
             LastName = lastName,
@@ -56,7 +91,6 @@ public static class DbSeeder
             RoleId = roleId
         };
 
-        users.Add(user);
-        context.SaveChanges();
+        return user;
     }
 }

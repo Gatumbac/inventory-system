@@ -13,8 +13,18 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.Property(r => r.Description).HasMaxLength(200);
         builder.HasIndex(r => r.Name).IsUnique();
 
-        builder.HasData(
-            new Role { Id = 1, Name = RoleNames.Admin },
-            new Role { Id = 2, Name = RoleNames.Viewer });
+        var adminRole = new Role()
+        {
+            Id = 1,
+            Name = RoleNames.Admin
+        };
+
+        var viewerRole = new Role()
+        {
+            Id = 2,
+            Name = RoleNames.Viewer
+        };
+
+        builder.HasData(adminRole, viewerRole);
     }
 }

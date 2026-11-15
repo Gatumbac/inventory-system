@@ -45,6 +45,19 @@ public static class DbSeeder
             return;
         }
 
+        users.Add(BuildUser(context, hasher, name, lastName, email, password, roleName));
+        context.SaveChanges();
+    }
+
+    private static User BuildUser(
+        DbContext context,
+        IPasswordHasher hasher,
+        string name,
+        string lastName,
+        string email,
+        string password,
+        string roleName)
+    {
         var roleId = context.Set<Role>().Single(r => r.Name == roleName).Id;
 
         var user = new User()
@@ -56,7 +69,6 @@ public static class DbSeeder
             RoleId = roleId
         };
 
-        users.Add(user);
-        context.SaveChanges();
+        return user;
     }
 }

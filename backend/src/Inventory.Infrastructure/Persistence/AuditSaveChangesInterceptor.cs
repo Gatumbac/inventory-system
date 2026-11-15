@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Inventory.Infrastructure.Persistence;
@@ -29,24 +30,28 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
 
         var now = DateTime.UtcNow;
 
-        foreach (var entry in context.ChangeTracker.Entries())
+        foreach (var entry in context.ChangeTracker.Entries().Where(HasAuditDates))
         {
-            var hasAuditDates = entry.Metadata.FindProperty("CreatedAt") != null
-                && entry.Metadata.FindProperty("UpdatedAt") != null;
-            if (!hasAuditDates)
-            {
-                continue;
-            }
+            StampEntry(entry, now);
+        }
+    }
 
-            if (entry.State == EntityState.Added)
-            {
-                entry.Property("CreatedAt").CurrentValue = now;
-                entry.Property("UpdatedAt").CurrentValue = now;
-            }
-            else if (entry.State == EntityState.Modified)
-            {
-                entry.Property("UpdatedAt").CurrentValue = now;
-            }
+    private static bool HasAuditDates(EntityEntry entry)
+    {
+        return entry.Metadata.FindProperty("CreatedAt") != null
+            && entry.Metadata.FindProperty("UpdatedAt") != null;
+    }
+
+    private static void StampEntry(EntityEntry entry, DateTime now)
+    {
+        if (entry.State == EntityState.Added)
+        {
+            entry.Property("CreatedAt").CurrentValue = now;
+            entry.Property("UpdatedAt").CurrentValue = now;
+        }
+        else if (entry.State == EntityState.Modified)
+        {
+            entry.Property("UpdatedAt").CurrentValue = now;
         }
     }
 }

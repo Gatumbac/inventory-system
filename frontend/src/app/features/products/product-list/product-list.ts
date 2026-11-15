@@ -1,0 +1,89 @@
+import { Component, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
+import { EMPTY, catchError, finalize } from 'rxjs';
+import { AuthService } from '../../../core/auth/auth.service';
+import { NotificationService } from '../../../core/notifications/notification.service';
+import { Product } from '../product.models';
+import { ProductService } from '../product.service';
+
+@Component({
+  selector: 'app-product-list',
+  imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatTableModule,
+    RouterLink,
+  ],
+  templateUrl: './product-list.html',
+  styleUrl: './product-list.scss',
+})
+export class ProductList {
+  private readonly service = inject(ProductService);
+  private readonly notifications = inject(NotificationService);
+
+  protected readonly isAdmin = inject(AuthService).isAdmin();
+  protected readonly columns = this.isAdmin
+    ? ['code', 'name', 'description', 'attributes', 'actions']
+    : ['code', 'name', 'description', 'attributes'];
+  protected readonly pageSizeOptions = [5, 10, 25, 50];
+  protected readonly products = signal<Product[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly page = signal(1);
+  protected readonly pageSize = signal(10);
+  protected readonly search = signal('');
+  protected readonly totalCount = signal(0);
+
+  constructor() {
+    this.load();
+  }
+
+  protected onPage(event: PageEvent): void {
+    this.page.set(event.pageIndex + 1);
+    this.pageSize.set(event.pageSize);
+    this.load();
+  }
+
+  protected onSearch(value: string): void {
+    this.search.set(value.trim());
+    this.page.set(1);
+    this.load();
+  }
+
+  protected remove(product: Product): void {
+    if (!confirm(`¿Eliminar "${product.name}"?`)) {
+      return;
+    }
+
+    this.service
+      .remove(product.id)
+      .pipe(catchError(() => EMPTY))
+      .subscribe(() => {
+        this.notifications.success('Producto eliminado');
+        if (this.products().length === 1 && this.page() > 1) {
+          this.page.update((page) => page - 1);
+        }
+        this.load();
+      });
+  }
+
+  private load(): void {
+    this.loading.set(true);
+    this.service
+      .list(this.page(), this.pageSize(), this.search())
+      .pipe(
+        catchError(() => EMPTY),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe((result) => {
+        this.products.set(result.items);
+        this.totalCount.set(result.totalCount);
+      });
+  }
+}

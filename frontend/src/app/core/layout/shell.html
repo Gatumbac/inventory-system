@@ -1,0 +1,7 @@
+<mat-toolbar>
+  <span>Inventario</span>
+  <span class="spacer"></span>
+  <span class="user">{{ auth.email() }} · {{ auth.role() }}</span>
+  <button mat-button (click)="logout()">Salir</button>
+</mat-toolbar>
+<router-outlet />

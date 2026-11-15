@@ -40,6 +40,10 @@ export class AuthService {
     return localStorage.getItem(EMAIL_KEY);
   }
 
+  isAdmin(): boolean {
+    return this.role() === 'Admin';
+  }
+
   isLoggedIn(): boolean {
     return this.token() !== null;
   }

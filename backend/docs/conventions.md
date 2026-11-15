@@ -31,4 +31,4 @@ List endpoints take `page` and `pageSize` and return `items` plus `totalCount` a
 
 ## Before finishing a change
 
-Run `dotnet format` and `dotnet build`. There are no automated tests, so check endpoints by hand.
+Run `dotnet format`, `dotnet build` and `dotnet test`. Unit tests cover the services in `tests/Inventory.Core.Tests` using in-memory fake repositories. Endpoints (roles, DataAnnotations, pagination limits) are still checked by hand.

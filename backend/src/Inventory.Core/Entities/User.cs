@@ -9,6 +9,7 @@ public class User
     public required string PasswordHash { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
     public int RoleId { get; set; }
     public Role Role { get; set; } = null!;
 }

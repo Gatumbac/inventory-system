@@ -65,6 +65,7 @@ builder.Services
 
 builder.Services.AddDbContext<AppDbContext>(options => options
     .UseSqlServer(connectionString)
+    .AddInterceptors(new AuditSaveChangesInterceptor())
     .UseSeeding((context, _) => DbSeeder.Seed(context, builder.Configuration, new IdentityPasswordHasher())));
 
 builder.Services.AddControllers();

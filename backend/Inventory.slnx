@@ -4,4 +4,7 @@
     <Project Path="src/Inventory.Core/Inventory.Core.csproj" />
     <Project Path="src/Inventory.Infrastructure/Inventory.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Inventory.Core.Tests/Inventory.Core.Tests.csproj" />
+  </Folder>
 </Solution>

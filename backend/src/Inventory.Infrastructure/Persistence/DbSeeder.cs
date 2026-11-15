@@ -18,9 +18,9 @@ public static class DbSeeder
         EnsureUser(context, hasher, "Admin", "System", adminEmail, adminPassword, RoleNames.Admin);
         EnsureUser(context, hasher, "Viewer", "System", viewerEmail, viewerPassword, RoleNames.Viewer);
 
-        EnsureSupplier(context, "Distribuidora Andina", "Electronics and accessories");
-        EnsureSupplier(context, "Importadora del Pacifico", "Home and office supplies");
-        EnsureSupplier(context, "Suministros Guayaquil", "Hardware and tools");
+        EnsureSupplier(context, "Distribuidora Andina", "Electrónica y accesorios");
+        EnsureSupplier(context, "Importadora del Pacifico", "Artículos para el hogar y la oficina");
+        EnsureSupplier(context, "Suministros Guayaquil", "Ferretería y herramientas");
     }
 
     private static void EnsureSupplier(DbContext context, string name, string description)

@@ -38,6 +38,26 @@ public class ProductService : IProductService
         return ToProductResponse(product);
     }
 
+    public async Task<ProductResponse?> UpdateProductAsync(int id, ProductRequest productRequest)
+    {
+        var product = await _products.GetByIdForUpdateAsync(id);
+        if (product == null)
+        {
+            return null;
+        }
+
+        product.Name = productRequest.Name.Trim();
+        product.Description = productRequest.Description?.Trim();
+        product.Attributes.Clear();
+        foreach (var attribute in productRequest.Attributes)
+        {
+            product.Attributes.Add(ToProductAttribute(attribute));
+        }
+
+        await _products.SaveChangesAsync();
+        return ToProductResponse(product);
+    }
+
     private ProductResponse ToProductResponse(Product product)
     {
         var attributes = product.Attributes.Select(a => ToProductAttributeResponse(a)).ToList();

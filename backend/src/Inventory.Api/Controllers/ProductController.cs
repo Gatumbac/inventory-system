@@ -53,4 +53,22 @@ public class ProductController : ControllerBase
         var response = await _productService.CreateProductAsync(productRequest);
         return CreatedAtAction(nameof(GetProduct), new { id = response.Id }, response);
     }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = RoleNames.Admin)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ProductResponse>> UpdateProduct(int id, ProductRequest productRequest)
+    {
+        var response = await _productService.UpdateProductAsync(id, productRequest);
+        if (response == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(response);
+    }
 }

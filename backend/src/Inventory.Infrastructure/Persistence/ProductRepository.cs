@@ -29,9 +29,21 @@ public class ProductRepository : IProductRepository
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
+    public async Task<Product?> GetByIdForUpdateAsync(int id)
+    {
+        return await _context.Products
+            .Include(p => p.Attributes)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     public async Task AddAsync(Product product)
     {
         _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task SaveChangesAsync()
+    {
         await _context.SaveChangesAsync();
     }
 }

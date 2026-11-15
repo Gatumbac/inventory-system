@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, UserInfo } from './auth.models';
+import { LoginRequest, LoginResponse } from './auth.models';
 
 const TOKEN_KEY = 'token';
 const ROLE_KEY = 'role';
+const EMAIL_KEY = 'email';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -16,17 +17,15 @@ export class AuthService {
       tap((response) => {
         localStorage.setItem(TOKEN_KEY, response.token);
         localStorage.setItem(ROLE_KEY, response.role);
+        localStorage.setItem(EMAIL_KEY, request.email);
       }),
     );
-  }
-
-  me() {
-    return this.http.get<UserInfo>(`${environment.apiUrl}/auth/me`);
   }
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(ROLE_KEY);
+    localStorage.removeItem(EMAIL_KEY);
   }
 
   token(): string | null {
@@ -35,6 +34,10 @@ export class AuthService {
 
   role(): string | null {
     return localStorage.getItem(ROLE_KEY);
+  }
+
+  email(): string | null {
+    return localStorage.getItem(EMAIL_KEY);
   }
 
   isLoggedIn(): boolean {

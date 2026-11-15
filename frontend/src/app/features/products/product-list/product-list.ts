@@ -1,5 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, finalize } from 'rxjs';
@@ -10,7 +13,14 @@ import { ProductService } from '../product.service';
 
 @Component({
   selector: 'app-product-list',
-  imports: [MatButtonModule, MatTableModule, RouterLink],
+  imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatTableModule,
+    RouterLink,
+  ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
 })
@@ -22,10 +32,27 @@ export class ProductList {
   protected readonly columns = this.isAdmin
     ? ['code', 'name', 'description', 'attributes', 'actions']
     : ['code', 'name', 'description', 'attributes'];
+  protected readonly pageSizeOptions = [5, 10, 25, 50];
   protected readonly products = signal<Product[]>([]);
   protected readonly loading = signal(true);
+  protected readonly page = signal(1);
+  protected readonly pageSize = signal(10);
+  protected readonly search = signal('');
+  protected readonly totalCount = signal(0);
 
   constructor() {
+    this.load();
+  }
+
+  protected onPage(event: PageEvent): void {
+    this.page.set(event.pageIndex + 1);
+    this.pageSize.set(event.pageSize);
+    this.load();
+  }
+
+  protected onSearch(value: string): void {
+    this.search.set(value.trim());
+    this.page.set(1);
     this.load();
   }
 
@@ -39,6 +66,9 @@ export class ProductList {
       .pipe(catchError(() => EMPTY))
       .subscribe(() => {
         this.notifications.success('Producto eliminado');
+        if (this.products().length === 1 && this.page() > 1) {
+          this.page.update((page) => page - 1);
+        }
         this.load();
       });
   }
@@ -46,11 +76,14 @@ export class ProductList {
   private load(): void {
     this.loading.set(true);
     this.service
-      .list()
+      .list(this.page(), this.pageSize(), this.search())
       .pipe(
         catchError(() => EMPTY),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((products) => this.products.set(products));
+      .subscribe((result) => {
+        this.products.set(result.items);
+        this.totalCount.set(result.totalCount);
+      });
   }
 }

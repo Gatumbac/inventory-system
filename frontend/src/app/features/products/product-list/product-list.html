@@ -5,6 +5,14 @@
   }
 </div>
 
+<div class="search">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar por código o nombre</mat-label>
+    <input matInput #searchInput (keyup.enter)="onSearch(searchInput.value)" />
+  </mat-form-field>
+  <button mat-flat-button (click)="onSearch(searchInput.value)">Buscar</button>
+</div>
+
 <div class="table-container">
   <table mat-table [dataSource]="products()">
     <ng-container matColumnDef="code">
@@ -44,6 +52,14 @@
   </table>
 </div>
 
-@if (!loading() && products().length === 0) {
+@if (!loading() && totalCount() === 0) {
   <p class="empty">No hay productos</p>
 }
+
+<mat-paginator
+  [length]="totalCount()"
+  [pageSize]="pageSize()"
+  [pageIndex]="page() - 1"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onPage($event)"
+/>

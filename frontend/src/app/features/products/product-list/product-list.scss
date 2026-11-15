@@ -3,6 +3,12 @@
   padding: 16px;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .table-container {
   overflow-x: auto;
 }

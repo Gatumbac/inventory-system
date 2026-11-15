@@ -10,3 +10,10 @@ export interface Product {
   description: string | null;
   attributes: ProductAttribute[];
 }
+
+export interface ProductRequest {
+  code: string;
+  name: string;
+  description: string | null;
+  attributes: ProductAttribute[];
+}

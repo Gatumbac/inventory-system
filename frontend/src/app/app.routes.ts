@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/auth/admin.guard';
 import { authGuard } from './core/auth/auth.guard';
 import { Shell } from './core/layout/shell';
 
@@ -14,6 +15,18 @@ export const routes: Routes = [
         path: 'products',
         loadComponent: () =>
           import('./features/products/product-list/product-list').then((m) => m.ProductList),
+      },
+      {
+        path: 'products/new',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/products/product-form/product-form').then((m) => m.ProductForm),
+      },
+      {
+        path: 'products/:id/edit',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/products/product-form/product-form').then((m) => m.ProductForm),
       },
     ],
   },

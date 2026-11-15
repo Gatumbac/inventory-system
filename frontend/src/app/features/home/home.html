@@ -1,0 +1,4 @@
+@if (user(); as user) {
+  <p>Sesión iniciada como {{ user.email }} ({{ user.role }})</p>
+}
+<button mat-flat-button (click)="logout()">Salir</button>

@@ -1,4 +1,5 @@
 using System.Text;
+using Inventory.Api.Middleware;
 using Inventory.Core.Abstractions;
 using Inventory.Core.Services;
 using Inventory.Infrastructure.Persistence;
@@ -62,6 +63,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options
     .UseSeeding((context, _) => DbSeeder.Seed(context, builder.Configuration, new IdentityPasswordHasher())));
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -77,6 +80,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

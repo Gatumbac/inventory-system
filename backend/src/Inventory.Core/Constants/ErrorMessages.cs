@@ -7,6 +7,8 @@ public static class ErrorMessages
     public const string ProductCodeInvalid = "El código solo puede contener letras, números y guiones";
     public const string ProductHasSuppliers = "No se puede eliminar un producto con proveedores asociados";
     public const string ProductAttributeNamesNotUnique = "Los nombres de los atributos deben ser únicos";
+    public const string PageInvalid = "La página debe estar entre 1 y 100000";
+    public const string PageSizeInvalid = "El tamaño de página debe estar entre 1 y 50";
     public const string ProductNotFound = "El producto no existe";
     public const string SupplierNotFound = "El proveedor no existe";
     public const string SupplierNameDuplicated = "Ya existe un proveedor con ese nombre";

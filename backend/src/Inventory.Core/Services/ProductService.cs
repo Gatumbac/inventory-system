@@ -14,11 +14,11 @@ public class ProductService : IProductService
         _products = products;
     }
 
-    public async Task<IReadOnlyList<ProductResponse>> GetProductsAsync()
+    public async Task<PagedResult<ProductResponse>> GetProductsAsync(ProductFilterRequest filterRequest)
     {
-        var products = await _products.GetAllAsync();
+        var page = await _products.GetPagedAsync(filterRequest);
 
-        return products.Select(p => ToProductResponse(p)).ToList();
+        return page.Map(p => ToProductResponse(p));
     }
 
     public async Task<ProductResponse?> GetProductAsync(int id)

@@ -21,10 +21,11 @@ public class ProductController : ControllerBase
 
     [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<IReadOnlyList<ProductResponse>>> GetProducts()
+    public async Task<ActionResult<PagedResult<ProductResponse>>> GetProducts([FromQuery] ProductFilterRequest filterRequest)
     {
-        var response = await _productService.GetProductsAsync();
+        var response = await _productService.GetProductsAsync(filterRequest);
         return Ok(response);
     }
 

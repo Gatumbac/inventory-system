@@ -1,10 +1,12 @@
+using Inventory.Core.Dtos;
 using Inventory.Core.Entities;
+using Inventory.Core.Results;
 
 namespace Inventory.Core.Abstractions;
 
 public interface IProductRepository
 {
-    Task<IReadOnlyList<Product>> GetAllAsync();
+    Task<PagedResult<Product>> GetPagedAsync(ProductFilterRequest filterRequest);
     Task<Product?> GetByIdAsync(int id);
     Task AddAsync(Product product);
     Task<Product?> GetByIdForUpdateAsync(int id);

@@ -1,5 +1,7 @@
 using Inventory.Core.Abstractions;
+using Inventory.Core.Dtos;
 using Inventory.Core.Entities;
+using Inventory.Core.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Infrastructure.Persistence;
@@ -13,12 +15,28 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<Product>> GetAllAsync()
+    public async Task<PagedResult<Product>> GetPagedAsync(ProductFilterRequest filterRequest)
     {
-        return await _context.Products
+        var query = _context.Products
             .AsNoTracking()
-            .Include(p => p.Attributes)
-            .ToListAsync();
+            .Include(p => p.Attributes);
+
+        var products = ApplySearch(query, filterRequest.Search)
+            .OrderBy(p => p.Name)
+            .ThenBy(p => p.Id);
+
+        return await PagedQuery.ToPagedAsync(products, filterRequest);
+    }
+
+    private static IQueryable<Product> ApplySearch(IQueryable<Product> query, string? search)
+    {
+        var term = search?.Trim();
+        if (string.IsNullOrEmpty(term))
+        {
+            return query;
+        }
+
+        return query.Where(p => p.Code.Contains(term) || p.Name.Contains(term));
     }
 
     public async Task<Product?> GetByIdAsync(int id)

@@ -5,7 +5,7 @@ namespace Inventory.Core.Abstractions;
 
 public interface IProductService
 {
-    Task<IReadOnlyList<ProductResponse>> GetProductsAsync();
+    Task<PagedResult<ProductResponse>> GetProductsAsync(ProductFilterRequest filterRequest);
     Task<ProductResponse?> GetProductAsync(int id);
     Task<SaveProductResult> CreateProductAsync(ProductRequest productRequest);
     Task<SaveProductResult> UpdateProductAsync(int id, ProductRequest productRequest);

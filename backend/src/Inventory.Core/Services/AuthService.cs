@@ -29,7 +29,7 @@ public class AuthService : IAuthService
             return null;
         }
 
-        var response = new LoginResponse
+        var response = new LoginResponse()
         {
             Token = _tokens.GenerateToken(user),
             Role = user.Role.Name

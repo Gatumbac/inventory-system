@@ -47,7 +47,7 @@ public static class DbSeeder
 
         var roleId = context.Set<Role>().Single(r => r.Name == roleName).Id;
 
-        var user = new User
+        var user = new User()
         {
             Name = name,
             LastName = lastName,

@@ -1,0 +1,9 @@
+namespace Inventory.Core.Entities;
+
+public class Supplier
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+    public string? Description { get; set; }
+    public ICollection<ProductSupplier> ProductSuppliers { get; set; } = new List<ProductSupplier>();
+}

@@ -10,6 +10,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
     {
         builder.Property(s => s.Name).IsRequired().HasMaxLength(150);
         builder.Property(s => s.Description).HasMaxLength(500);
-        builder.HasIndex(s => s.Name).IsUnique();
+        builder.HasIndex(s => s.Name).IsUnique().HasFilter("[DeletedAt] IS NULL");
+        builder.HasQueryFilter(s => s.DeletedAt == null);
     }
 }

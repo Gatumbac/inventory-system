@@ -49,10 +49,16 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<ProductResponse>> CreateProduct(ProductRequest productRequest)
     {
-        var response = await _productService.CreateProductAsync(productRequest);
-        return CreatedAtAction(nameof(GetProduct), new { id = response.Id }, response);
+        var result = await _productService.CreateProductAsync(productRequest);
+        if (result.Status == SaveProductStatus.DuplicateCode)
+        {
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: ErrorMessages.ProductCodeDuplicated);
+        }
+
+        return CreatedAtAction(nameof(GetProduct), new { id = result.Product!.Id }, result.Product);
     }
 
     [HttpPut("{id}")]
@@ -62,15 +68,21 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<ProductResponse>> UpdateProduct(int id, ProductRequest productRequest)
     {
-        var response = await _productService.UpdateProductAsync(id, productRequest);
-        if (response == null)
+        var result = await _productService.UpdateProductAsync(id, productRequest);
+        if (result.Status == SaveProductStatus.NotFound)
         {
             return NotFound();
         }
 
-        return Ok(response);
+        if (result.Status == SaveProductStatus.DuplicateCode)
+        {
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: ErrorMessages.ProductCodeDuplicated);
+        }
+
+        return Ok(result.Product);
     }
 
     [HttpDelete("{id}")]
@@ -90,7 +102,7 @@ public class ProductController : ControllerBase
 
         if (response == DeleteProductResult.HasSuppliers)
         {
-            return Problem(statusCode: StatusCodes.Status409Conflict, title: "No se puede eliminar un producto con proveedores asociados");
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: ErrorMessages.ProductHasSuppliers);
         }
 
         return NoContent();

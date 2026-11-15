@@ -11,4 +11,5 @@ public interface IProductRepository
     Task SaveChangesAsync();
     Task RemoveAsync(Product product);
     Task<bool> HasSuppliersAsync(int productId);
+    Task<bool> CodeExistsAsync(string code, int? excludeId = null);
 }

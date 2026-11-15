@@ -21,4 +21,36 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        StampAuditDates();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        StampAuditDates();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    private void StampAuditDates()
+    {
+        var now = DateTime.UtcNow;
+
+        foreach (var entry in ChangeTracker.Entries().Where(e => AuditedTypes.Contains(e.Entity.GetType())))
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Property("CreatedAt").CurrentValue = now;
+                entry.Property("UpdatedAt").CurrentValue = now;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Property("UpdatedAt").CurrentValue = now;
+            }
+        }
+    }
+
+    private static readonly Type[] AuditedTypes = [typeof(Product), typeof(ProductSupplier), typeof(Supplier), typeof(User)];
 }

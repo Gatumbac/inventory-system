@@ -11,7 +11,8 @@ public class ProductSupplierConfiguration : IEntityTypeConfiguration<ProductSupp
         builder.Property(ps => ps.LotNumber).HasMaxLength(50);
         builder.Property(ps => ps.Price).HasPrecision(18, 2);
 
-        builder.HasIndex(ps => new { ps.ProductId, ps.SupplierId, ps.LotNumber }).IsUnique().HasFilter(null);
+        builder.HasIndex(ps => new { ps.ProductId, ps.SupplierId, ps.LotNumber }).IsUnique().HasFilter("[DeletedAt] IS NULL");
+        builder.HasQueryFilter(ps => ps.DeletedAt == null);
 
         builder.ToTable(t =>
         {

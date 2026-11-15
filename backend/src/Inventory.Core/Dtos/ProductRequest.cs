@@ -1,9 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using Inventory.Core.Constants;
 
 namespace Inventory.Core.Dtos;
 
 public class ProductRequest : IValidatableObject
 {
+    [Required]
+    [StringLength(50)]
+    [RegularExpression("^[A-Za-z0-9-]+$", ErrorMessage = ErrorMessages.ProductCodeInvalid)]
+    public required string Code { get; set; }
+
     [Required]
     [StringLength(200)]
     public required string Name { get; set; }
@@ -20,8 +26,11 @@ public class ProductRequest : IValidatableObject
         var uniqueCount = Attributes.Select(a => a.Name.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).Count();
         if (uniqueCount != Attributes.Count)
         {
-            var fields = new List<string> { nameof(Attributes) };
-            results.Add(new ValidationResult("Attribute names must be unique.", fields));
+            var fields = new List<string>()
+            {
+                nameof(Attributes)
+            };
+            results.Add(new ValidationResult(ErrorMessages.ProductAttributeNamesNotUnique, fields));
         }
 
         return results;

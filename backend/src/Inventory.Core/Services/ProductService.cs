@@ -32,21 +32,54 @@ public class ProductService : IProductService
         return ToProductResponse(product);
     }
 
-    public async Task<ProductResponse> CreateProductAsync(ProductRequest productRequest)
+    public async Task<SaveProductResult> CreateProductAsync(ProductRequest productRequest)
     {
         var product = ToProduct(productRequest);
+        if (await _products.CodeExistsAsync(product.Code))
+        {
+            var duplicateResult = new SaveProductResult()
+            {
+                Status = SaveProductStatus.DuplicateCode
+            };
+
+            return duplicateResult;
+        }
+
         await _products.AddAsync(product);
-        return ToProductResponse(product);
+        var result = new SaveProductResult()
+        {
+            Status = SaveProductStatus.Saved,
+            Product = ToProductResponse(product)
+        };
+
+        return result;
     }
 
-    public async Task<ProductResponse?> UpdateProductAsync(int id, ProductRequest productRequest)
+    public async Task<SaveProductResult> UpdateProductAsync(int id, ProductRequest productRequest)
     {
         var product = await _products.GetByIdForUpdateAsync(id);
         if (product == null)
         {
-            return null;
+            var notFoundResult = new SaveProductResult()
+            {
+                Status = SaveProductStatus.NotFound
+            };
+
+            return notFoundResult;
         }
 
+        var code = NormalizeCode(productRequest.Code);
+        if (await _products.CodeExistsAsync(code, id))
+        {
+            var duplicateResult = new SaveProductResult()
+            {
+                Status = SaveProductStatus.DuplicateCode
+            };
+
+            return duplicateResult;
+        }
+
+        product.Code = code;
         product.Name = productRequest.Name.Trim();
         product.Description = productRequest.Description?.Trim();
         product.Attributes.Clear();
@@ -56,7 +89,13 @@ public class ProductService : IProductService
         }
 
         await _products.SaveChangesAsync();
-        return ToProductResponse(product);
+        var result = new SaveProductResult()
+        {
+            Status = SaveProductStatus.Saved,
+            Product = ToProductResponse(product)
+        };
+
+        return result;
     }
 
     public async Task<DeleteProductResult> RemoveProductAsync(int id)
@@ -83,6 +122,7 @@ public class ProductService : IProductService
         var response = new ProductResponse()
         {
             Id = product.Id,
+            Code = product.Code,
             Name = product.Name,
             Description = product.Description,
             Attributes = attributes
@@ -107,11 +147,17 @@ public class ProductService : IProductService
         var attributes = productRequest.Attributes.Select(pa => ToProductAttribute(pa)).ToList();
         var product = new Product()
         {
+            Code = NormalizeCode(productRequest.Code),
             Name = productRequest.Name.Trim(),
             Description = productRequest.Description?.Trim(),
             Attributes = attributes
         };
         return product;
+    }
+
+    private static string NormalizeCode(string code)
+    {
+        return code.Trim().ToUpperInvariant();
     }
 
     private ProductAttribute ToProductAttribute(ProductAttributeRequest productAttributeRequest)

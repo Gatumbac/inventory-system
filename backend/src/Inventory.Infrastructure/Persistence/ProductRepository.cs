@@ -49,8 +49,13 @@ public class ProductRepository : IProductRepository
 
     public async Task RemoveAsync(Product product)
     {
-        _context.Products.Remove(product);
+        product.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> CodeExistsAsync(string code, int? excludeId = null)
+    {
+        return await _context.Products.AnyAsync(p => p.Code == code && p.Id != excludeId);
     }
 
     public async Task<bool> HasSuppliersAsync(int productId)

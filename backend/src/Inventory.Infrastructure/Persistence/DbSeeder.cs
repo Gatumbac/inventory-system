@@ -17,6 +17,28 @@ public static class DbSeeder
 
         EnsureUser(context, hasher, "Admin", "System", adminEmail, adminPassword, RoleNames.Admin);
         EnsureUser(context, hasher, "Viewer", "System", viewerEmail, viewerPassword, RoleNames.Viewer);
+
+        EnsureSupplier(context, "Distribuidora Andina", "Electronics and accessories");
+        EnsureSupplier(context, "Importadora del Pacifico", "Home and office supplies");
+        EnsureSupplier(context, "Suministros Guayaquil", "Hardware and tools");
+    }
+
+    private static void EnsureSupplier(DbContext context, string name, string description)
+    {
+        var suppliers = context.Set<Supplier>();
+        if (suppliers.Any(s => s.Name == name))
+        {
+            return;
+        }
+
+        var supplier = new Supplier()
+        {
+            Name = name,
+            Description = description
+        };
+
+        suppliers.Add(supplier);
+        context.SaveChanges();
     }
 
     private static string GetSetting(IConfiguration configuration, string key)

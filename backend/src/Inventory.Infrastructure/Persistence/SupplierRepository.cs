@@ -21,8 +21,47 @@ public class SupplierRepository : ISupplierRepository
             .ToListAsync();
     }
 
+    public async Task<Supplier?> GetByIdAsync(int id)
+    {
+        return await _context.Suppliers
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<Supplier?> GetByIdForUpdateAsync(int id)
+    {
+        return await _context.Suppliers.FirstOrDefaultAsync(s => s.Id == id);
+    }
+
     public async Task<bool> ExistsAsync(int id)
     {
         return await _context.Suppliers.AnyAsync(s => s.Id == id);
+    }
+
+    public async Task AddAsync(Supplier supplier)
+    {
+        _context.Suppliers.Add(supplier);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveAsync(Supplier supplier)
+    {
+        supplier.DeletedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> NameExistsAsync(string name, int? excludeId = null)
+    {
+        return await _context.Suppliers.AnyAsync(s => s.Name == name && s.Id != excludeId);
+    }
+
+    public async Task<bool> HasProductSuppliersAsync(int supplierId)
+    {
+        return await _context.ProductSuppliers.AnyAsync(ps => ps.SupplierId == supplierId);
     }
 }

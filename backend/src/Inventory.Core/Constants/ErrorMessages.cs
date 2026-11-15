@@ -9,6 +9,8 @@ public static class ErrorMessages
     public const string ProductAttributeNamesNotUnique = "Los nombres de los atributos deben ser únicos";
     public const string ProductNotFound = "El producto no existe";
     public const string SupplierNotFound = "El proveedor no existe";
+    public const string SupplierNameDuplicated = "Ya existe un proveedor con ese nombre";
+    public const string SupplierHasProductSuppliers = "No se puede eliminar un proveedor con productos asociados";
     public const string ProductSupplierNotFound = "El proveedor del producto no existe";
     public const string ProductSupplierLotDuplicated = "Ya existe ese proveedor con ese lote para el producto";
     public const string ProductSupplierPriceInvalid = "El precio debe ser mayor o igual a cero";

@@ -1,4 +1,5 @@
 using Inventory.Core.Abstractions;
+using Inventory.Core.Constants;
 using Inventory.Core.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,5 +40,17 @@ public class ProductController : ControllerBase
         }
 
         return Ok(response);
+    }
+
+    [HttpPost("")]
+    [Authorize(Roles = RoleNames.Admin)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<ProductResponse>> CreateProduct(ProductRequest productRequest)
+    {
+        var response = await _productService.CreateProductAsync(productRequest);
+        return CreatedAtAction(nameof(GetProduct), new { id = response.Id }, response);
     }
 }

@@ -31,6 +31,13 @@ public class ProductService : IProductService
         return ToProductResponse(product);
     }
 
+    public async Task<ProductResponse> CreateProductAsync(ProductRequest productRequest)
+    {
+        var product = ToProduct(productRequest);
+        await _products.AddAsync(product);
+        return ToProductResponse(product);
+    }
+
     private ProductResponse ToProductResponse(Product product)
     {
         var attributes = product.Attributes.Select(a => ToProductAttributeResponse(a)).ToList();
@@ -55,5 +62,27 @@ public class ProductService : IProductService
         };
 
         return response;
+    }
+
+    private Product ToProduct(ProductRequest productRequest)
+    {
+        var attributes = productRequest.Attributes.Select(pa => ToProductAttribute(pa)).ToList();
+        var product = new Product()
+        {
+            Name = productRequest.Name.Trim(),
+            Description = productRequest.Description?.Trim(),
+            Attributes = attributes
+        };
+        return product;
+    }
+
+    private ProductAttribute ToProductAttribute(ProductAttributeRequest productAttributeRequest)
+    {
+        var productAttribute = new ProductAttribute()
+        {
+            Name = productAttributeRequest.Name.Trim(),
+            Value = productAttributeRequest.Value.Trim()
+        };
+        return productAttribute;
     }
 }

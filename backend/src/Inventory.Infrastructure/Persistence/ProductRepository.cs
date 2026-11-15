@@ -28,4 +28,10 @@ public class ProductRepository : IProductRepository
             .Include(p => p.Attributes)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
+
+    public async Task AddAsync(Product product)
+    {
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+    }
 }

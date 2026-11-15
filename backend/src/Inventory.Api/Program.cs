@@ -1,7 +1,11 @@
+using System.Text;
 using Inventory.Core.Abstractions;
+using Inventory.Core.Services;
 using Inventory.Infrastructure.Persistence;
 using Inventory.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +15,39 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Default")
     ?? throw new InvalidOperationException("Connection string 'Default' not found.");
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
+var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+    ?? throw new InvalidOperationException("Section 'Jwt' not found.");
+if (string.IsNullOrWhiteSpace(jwtSettings.Key)
+    || string.IsNullOrWhiteSpace(jwtSettings.Issuer)
+    || string.IsNullOrWhiteSpace(jwtSettings.Audience))
+{
+    throw new InvalidOperationException("Settings 'Jwt:Key', 'Jwt:Issuer' and 'Jwt:Audience' are required.");
+}
+
 builder.Services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
+builder.Services.AddSingleton<ITokenService, JwtTokenService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+            NameClaimType = "sub",
+            RoleClaimType = "role"
+        };
+    });
 
 builder.Services.AddDbContext<AppDbContext>(options => options
     .UseSqlServer(connectionString)
@@ -31,6 +67,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

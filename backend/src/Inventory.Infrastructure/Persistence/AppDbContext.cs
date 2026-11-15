@@ -17,4 +17,10 @@ public class AppDbContext : DbContext
     public DbSet<ProductSupplier> ProductSuppliers { get; set; }
 
     public DbSet<Supplier> Suppliers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    }
 }

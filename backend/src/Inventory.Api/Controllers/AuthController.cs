@@ -17,6 +17,8 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
     {
         var response = await _authService.LoginAsync(request);
@@ -30,6 +32,8 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpGet("me")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public ActionResult Me()
     {
         var email = User.FindFirst("email")?.Value;

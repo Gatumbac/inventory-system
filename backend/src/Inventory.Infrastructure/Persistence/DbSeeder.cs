@@ -10,27 +10,53 @@ public static class DbSeeder
 {
     public static void Seed(DbContext context, IConfiguration configuration, IPasswordHasher hasher)
     {
-        var email = configuration["Seed:AdminEmail"]
-            ?? throw new InvalidOperationException("Setting 'Seed:AdminEmail' not found.");
-        var password = configuration["Seed:AdminPassword"]
-            ?? throw new InvalidOperationException("Setting 'Seed:AdminPassword' not found.");
+        var adminEmail = GetSetting(configuration, "Seed:AdminEmail");
+        var adminPassword = GetSetting(configuration, "Seed:AdminPassword");
+        var viewerEmail = GetSetting(configuration, "Seed:ViewerEmail");
+        var viewerPassword = GetSetting(configuration, "Seed:ViewerPassword");
 
+        EnsureUser(context, hasher, "Admin", "System", adminEmail, adminPassword, RoleNames.Admin);
+        EnsureUser(context, hasher, "Viewer", "System", viewerEmail, viewerPassword, RoleNames.Viewer);
+    }
+
+    private static string GetSetting(IConfiguration configuration, string key)
+    {
+        var value = configuration[key];
+        if (value == null)
+        {
+            throw new InvalidOperationException("Setting '" + key + "' not found.");
+        }
+
+        return value;
+    }
+
+    private static void EnsureUser(
+        DbContext context,
+        IPasswordHasher hasher,
+        string name,
+        string lastName,
+        string email,
+        string password,
+        string roleName)
+    {
         var users = context.Set<User>();
         if (users.Any(u => u.Email == email))
         {
             return;
         }
 
-        var adminRoleId = context.Set<Role>().Single(r => r.Name == RoleNames.Admin).Id;
+        var roleId = context.Set<Role>().Single(r => r.Name == roleName).Id;
 
-        users.Add(new User
+        var user = new User
         {
-            Name = "Admin",
-            LastName = "System",
+            Name = name,
+            LastName = lastName,
             Email = email,
             PasswordHash = hasher.Hash(password),
-            RoleId = adminRoleId
-        });
+            RoleId = roleId
+        };
+
+        users.Add(user);
         context.SaveChanges();
     }
 }

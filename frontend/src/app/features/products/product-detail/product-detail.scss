@@ -1,31 +1,44 @@
-:host {
-  display: block;
-  padding: 16px;
+h1 {
+  margin: 0;
+  font: var(--mat-sys-title-large);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.back {
+  margin-bottom: var(--app-space-3);
 }
 
-.lots-header {
-  margin-top: 24px;
+.panel + .panel {
+  margin-top: var(--app-space-5);
 }
 
-.code {
-  margin-top: 0;
+.sk-back {
+  width: 90px;
+  height: 20px;
+  margin-bottom: var(--app-space-3);
 }
 
-.table-container {
-  overflow-x: auto;
+.sk-title {
+  width: 220px;
+  height: 28px;
 }
 
-table {
-  width: 100%;
+.sk-code {
+  width: 90px;
+  height: 14px;
 }
 
-.empty {
-  text-align: center;
-  padding: 24px;
+.sk-label {
+  flex: 0 0 112px;
+  height: 14px;
+}
+
+.sk-line {
+  width: 40%;
+  height: 14px;
+
+  &.short {
+    width: 20%;
+  }
 }

@@ -2,6 +2,14 @@
 
 Product inventory system: Angular, .NET 10 and SQL Server. Users log in with JWT, and each product can have a different price and stock per supplier or lot.
 
+## Screenshots
+
+![Login](frontend/docs/ui/login.png)
+
+![Products list](frontend/docs/ui/products_list.png)
+
+![Product detail with suppliers and lots](frontend/docs/ui/product_detail.png)
+
 ## Run the API with Docker
 
 ```bash
@@ -36,4 +44,5 @@ It runs on http://localhost:4200 and talks to the API on port 5078.
 ## More
 
 - Backend decisions: [backend/docs/decisions.md](backend/docs/decisions.md)
+- Frontend decisions and architecture: [frontend/docs/decisions.md](frontend/docs/decisions.md), [frontend/docs/architecture.md](frontend/docs/architecture.md)
 - Architecture and conventions: [backend/docs/architecture/architecture.md](backend/docs/architecture/architecture.md), [backend/docs/conventions.md](backend/docs/conventions.md)

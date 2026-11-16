@@ -1,13 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
-import { EMPTY, catchError, finalize } from 'rxjs';
+import { Router, RouterLink } from '@angular/router';
+import { EMPTY, catchError, filter, finalize, switchMap } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
+import { SpanishPaginatorIntl } from '../../../core/layout/paginator-intl';
 import { NotificationService } from '../../../core/notifications/notification.service';
+import { ConfirmService } from '../../../shared/confirm-dialog/confirm.service';
+import { RowActions } from '../../../shared/row-actions/row-actions';
+import { SearchField } from '../../../shared/search-field/search-field';
+import { SkeletonRows } from '../../../shared/skeleton-rows/skeleton-rows';
 import { Product } from '../product.models';
 import { ProductService } from '../product.service';
 
@@ -15,26 +20,35 @@ import { ProductService } from '../product.service';
   selector: 'app-product-list',
   imports: [
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
+    MatIconModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     MatTableModule,
     RouterLink,
+    RowActions,
+    SearchField,
+    SkeletonRows,
   ],
   templateUrl: './product-list.html',
-  styleUrl: './product-list.scss',
+  host: { class: 'page' },
+  providers: [{ provide: MatPaginatorIntl, useClass: SpanishPaginatorIntl }],
 })
 export class ProductList {
   private readonly service = inject(ProductService);
   private readonly notifications = inject(NotificationService);
+  private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
+
+  protected readonly searchField = viewChild.required(SearchField);
 
   protected readonly isAdmin = inject(AuthService).isAdmin();
   protected readonly columns = this.isAdmin
-    ? ['code', 'name', 'description', 'attributes', 'actions']
-    : ['code', 'name', 'description', 'attributes'];
+    ? ['code', 'name', 'description', 'attributes', 'actions', 'chevron']
+    : ['code', 'name', 'description', 'attributes', 'chevron'];
   protected readonly pageSizeOptions = [5, 10, 25, 50];
   protected readonly products = signal<Product[]>([]);
   protected readonly loading = signal(true);
+  protected readonly failed = signal(false);
   protected readonly page = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly search = signal('');
@@ -42,6 +56,24 @@ export class ProductList {
 
   constructor() {
     this.load();
+  }
+
+  protected attributesText(product: Product, limit = product.attributes.length): string {
+    const shown = product.attributes
+      .slice(0, limit)
+      .map((attribute) => `${attribute.name}: ${attribute.value}`)
+      .join(' · ');
+    const hidden = product.attributes.length - limit;
+
+    return hidden > 0 ? `${shown} · +${hidden}` : shown;
+  }
+
+  protected open(event: MouseEvent, product: Product): void {
+    if ((event.target as HTMLElement).closest('a, button')) {
+      return;
+    }
+
+    this.router.navigate(['/products', product.id]);
   }
 
   protected onPage(event: PageEvent): void {
@@ -57,13 +89,18 @@ export class ProductList {
   }
 
   protected remove(product: Product): void {
-    if (!confirm(`¿Eliminar "${product.name}"?`)) {
-      return;
-    }
-
-    this.service
-      .remove(product.id)
-      .pipe(catchError(() => EMPTY))
+    this.confirm
+      .ask({
+        title: '¿Eliminar producto?',
+        message: `Se eliminará "${product.name}".`,
+        confirmLabel: 'Eliminar',
+        destructive: true,
+      })
+      .pipe(
+        filter(Boolean),
+        switchMap(() => this.service.remove(product.id)),
+        catchError(() => EMPTY),
+      )
       .subscribe(() => {
         this.notifications.success('Producto eliminado');
         if (this.products().length === 1 && this.page() > 1) {
@@ -75,10 +112,14 @@ export class ProductList {
 
   private load(): void {
     this.loading.set(true);
+    this.failed.set(false);
     this.service
       .list(this.page(), this.pageSize(), this.search())
       .pipe(
-        catchError(() => EMPTY),
+        catchError(() => {
+          this.failed.set(true);
+          return EMPTY;
+        }),
         finalize(() => this.loading.set(false)),
       )
       .subscribe((result) => {

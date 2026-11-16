@@ -1,0 +1,17 @@
+<div class="field">
+  <mat-icon fontSet="material-symbols-outlined" aria-hidden="true">search</mat-icon>
+  <input
+    #input
+    type="search"
+    autocomplete="off"
+    [attr.aria-label]="label()"
+    [placeholder]="label()"
+    [value]="value()"
+    (input)="onInput(input.value)"
+  />
+  @if (value()) {
+    <button mat-icon-button type="button" aria-label="Limpiar búsqueda" (click)="clear()">
+      <mat-icon fontSet="material-symbols-outlined">close</mat-icon>
+    </button>
+  }
+</div>

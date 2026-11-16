@@ -10,6 +10,6 @@ export class NotificationService {
   }
 
   error(message: string): void {
-    this.snackBar.open(message, 'Cerrar', { duration: 5000 });
+    this.snackBar.open(message, 'Cerrar', { duration: 5000, panelClass: 'snack-error' });
   }
 }

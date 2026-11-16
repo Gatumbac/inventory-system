@@ -1,0 +1,21 @@
+<button mat-icon-button [matMenuTriggerFor]="menu" [attr.aria-label]="'Acciones de ' + label()">
+  <mat-icon fontSet="material-symbols-outlined">more_vert</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu" xPosition="before">
+  @if (editLink(); as link) {
+    <a mat-menu-item [routerLink]="link">
+      <mat-icon fontSet="material-symbols-outlined">edit</mat-icon>
+      Editar
+    </a>
+  } @else {
+    <button mat-menu-item (click)="edit.emit()">
+      <mat-icon fontSet="material-symbols-outlined">edit</mat-icon>
+      Editar
+    </button>
+  }
+  <button mat-menu-item class="danger" (click)="remove.emit()">
+    <mat-icon fontSet="material-symbols-outlined">delete</mat-icon>
+    Eliminar
+  </button>
+</mat-menu>

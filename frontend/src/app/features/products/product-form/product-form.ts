@@ -8,8 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, catchError } from 'rxjs';
@@ -25,12 +25,13 @@ type AttributeGroup = FormGroup<{ name: FormControl<string>; value: FormControl<
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,
-    MatCardModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
   ],
   templateUrl: './product-form.html',
   styleUrl: './product-form.scss',
+  host: { class: 'page page-narrow' },
 })
 export class ProductForm {
   private readonly service = inject(ProductService);
@@ -41,6 +42,7 @@ export class ProductForm {
 
   protected readonly isEdit = this.id !== null;
   protected readonly submitting = signal(false);
+  protected readonly loading = signal(this.id !== null);
   protected readonly form = this.fb.group({
     code: [
       '',
@@ -71,6 +73,7 @@ export class ProductForm {
           product.attributes.forEach((a) =>
             this.attributes.push(this.newAttribute(a.name, a.value)),
           );
+          this.loading.set(false);
         });
     }
   }

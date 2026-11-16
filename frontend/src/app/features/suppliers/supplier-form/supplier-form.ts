@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, catchError } from 'rxjs';
@@ -16,12 +16,12 @@ import { SupplierService } from '../supplier.service';
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,
-    MatCardModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
   ],
   templateUrl: './supplier-form.html',
-  styleUrl: './supplier-form.scss',
+  host: { class: 'page page-narrow' },
 })
 export class SupplierForm {
   private readonly service = inject(SupplierService);
@@ -32,6 +32,7 @@ export class SupplierForm {
 
   protected readonly isEdit = this.id !== null;
   protected readonly submitting = signal(false);
+  protected readonly loading = signal(this.id !== null);
   protected readonly form = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(150)]],
     description: ['', Validators.maxLength(500)],
@@ -52,6 +53,7 @@ export class SupplierForm {
             name: supplier.name,
             description: supplier.description ?? '',
           });
+          this.loading.set(false);
         });
     }
   }

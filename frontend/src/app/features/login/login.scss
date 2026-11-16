@@ -1,21 +1,74 @@
 :host {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
   min-height: 100%;
-  padding: 16px;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--app-space-5);
   box-sizing: border-box;
+  width: 100%;
+  max-width: 400px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: var(--app-space-5) var(--app-space-4) 96px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-space-3);
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--app-radius-control);
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.brand-name {
+  font: var(--mat-sys-title-large);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .login-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-5);
+  padding: var(--app-space-5);
+}
+
+header {
+  h1 {
+    margin: 0 0 var(--app-space-1);
+    font: var(--mat-sys-title-large);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    margin: 0;
+  }
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 16px;
+}
+
+mat-form-field {
+  --mat-form-field-container-height: 48px;
+  --mat-form-field-container-vertical-padding: 12px;
+}
+
+button {
+  margin-top: var(--app-space-2);
 }

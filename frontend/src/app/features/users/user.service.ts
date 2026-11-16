@@ -9,10 +9,13 @@ export class UserService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/users`;
 
-  list(page: number, pageSize: number, search: string) {
+  list(page: number, pageSize: number, search: string, inactive: boolean) {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
     if (search) {
       params = params.set('search', search);
+    }
+    if (inactive) {
+      params = params.set('inactive', true);
     }
 
     return this.http.get<PagedResult<User>>(this.url, { params });
@@ -24,5 +27,9 @@ export class UserService {
 
   remove(id: number) {
     return this.http.delete<void>(`${this.url}/${id}`);
+  }
+
+  reactivate(id: number) {
+    return this.http.post<void>(`${this.url}/${id}/reactivate`, null);
   }
 }

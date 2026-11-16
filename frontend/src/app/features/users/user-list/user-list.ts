@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -20,6 +21,7 @@ import { UserService } from '../user.service';
   imports: [
     NgTemplateOutlet,
     MatButtonModule,
+    MatButtonToggleModule,
     MatIconModule,
     MatPaginatorModule,
     MatProgressBarModule,
@@ -29,6 +31,7 @@ import { UserService } from '../user.service';
     SkeletonRows,
   ],
   templateUrl: './user-list.html',
+  styleUrl: './user-list.scss',
   host: { class: 'page' },
   providers: [{ provide: MatPaginatorIntl, useClass: SpanishPaginatorIntl }],
 })
@@ -51,6 +54,7 @@ export class UserList {
   protected readonly page = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly search = signal('');
+  protected readonly inactive = signal(false);
   protected readonly totalCount = signal(0);
 
   constructor() {
@@ -69,6 +73,27 @@ export class UserList {
     this.load();
   }
 
+  protected onStatus(inactive: boolean): void {
+    this.inactive.set(inactive);
+    this.page.set(1);
+    this.load();
+  }
+
+  protected reactivate(user: User): void {
+    this.confirm
+      .ask({
+        title: '¿Reactivar usuario?',
+        message: `${user.name} ${user.lastName} podrá volver a iniciar sesión.`,
+        confirmLabel: 'Reactivar',
+      })
+      .pipe(
+        filter(Boolean),
+        switchMap(() => this.service.reactivate(user.id)),
+        catchError(() => EMPTY),
+      )
+      .subscribe(() => this.afterChange('Usuario reactivado'));
+  }
+
   protected deactivate(user: User): void {
     this.confirm
       .ask({
@@ -82,20 +107,22 @@ export class UserList {
         switchMap(() => this.service.remove(user.id)),
         catchError(() => EMPTY),
       )
-      .subscribe(() => {
-        this.notifications.success('Usuario desactivado');
-        if (this.users().length === 1 && this.page() > 1) {
-          this.page.update((page) => page - 1);
-        }
-        this.load();
-      });
+      .subscribe(() => this.afterChange('Usuario desactivado'));
+  }
+
+  private afterChange(message: string): void {
+    this.notifications.success(message);
+    if (this.users().length === 1 && this.page() > 1) {
+      this.page.update((page) => page - 1);
+    }
+    this.load();
   }
 
   private load(): void {
     this.loading.set(true);
     this.failed.set(false);
     this.service
-      .list(this.page(), this.pageSize(), this.search())
+      .list(this.page(), this.pageSize(), this.search(), this.inactive())
       .pipe(
         catchError(() => {
           this.failed.set(true);

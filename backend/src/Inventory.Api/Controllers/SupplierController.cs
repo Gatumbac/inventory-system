@@ -21,10 +21,11 @@ public class SupplierController : ControllerBase
 
     [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<IReadOnlyList<SupplierResponse>>> GetSuppliers()
+    public async Task<ActionResult<PagedResult<SupplierResponse>>> GetSuppliers([FromQuery] PageRequest pageRequest)
     {
-        var response = await _supplierService.GetSuppliersAsync();
+        var response = await _supplierService.GetSuppliersAsync(pageRequest);
         return Ok(response);
     }
 

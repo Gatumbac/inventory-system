@@ -5,7 +5,7 @@ namespace Inventory.Core.Abstractions;
 
 public interface ISupplierService
 {
-    Task<IReadOnlyList<SupplierResponse>> GetSuppliersAsync();
+    Task<PagedResult<SupplierResponse>> GetSuppliersAsync(PageRequest pageRequest);
     Task<SupplierResponse?> GetSupplierAsync(int id);
     Task<SaveSupplierResult> CreateSupplierAsync(SupplierRequest supplierRequest);
     Task<SaveSupplierResult> UpdateSupplierAsync(int id, SupplierRequest supplierRequest);

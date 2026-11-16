@@ -14,11 +14,11 @@ public class SupplierService : ISupplierService
         _suppliers = suppliers;
     }
 
-    public async Task<IReadOnlyList<SupplierResponse>> GetSuppliersAsync()
+    public async Task<PagedResult<SupplierResponse>> GetSuppliersAsync(PageRequest pageRequest)
     {
-        var suppliers = await _suppliers.GetAllAsync();
+        var page = await _suppliers.GetPagedAsync(pageRequest);
 
-        return suppliers.Select(s => ToSupplierResponse(s)).ToList();
+        return page.Map(s => ToSupplierResponse(s));
     }
 
     public async Task<SupplierResponse?> GetSupplierAsync(int id)

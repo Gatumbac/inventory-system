@@ -16,6 +16,26 @@ public class SupplierServiceTests
     }
 
     [Fact]
+    public async Task GetSuppliers_ReturnsMappedPage()
+    {
+        _suppliers.Seed("Acme");
+        _suppliers.Seed("Globex");
+        var pageRequest = new PageRequest()
+        {
+            Page = 2,
+            PageSize = 5
+        };
+
+        var result = await _service.GetSuppliersAsync(pageRequest);
+
+        Assert.Equal(2, result.Items.Count);
+        Assert.Equal("Acme", result.Items[0].Name);
+        Assert.Equal(2, result.Page);
+        Assert.Equal(5, result.PageSize);
+        Assert.Equal(2, result.TotalCount);
+    }
+
+    [Fact]
     public async Task CreateSupplier_TrimsNameAndSaves()
     {
         var result = await _service.CreateSupplierAsync(NewRequest("  Acme "));

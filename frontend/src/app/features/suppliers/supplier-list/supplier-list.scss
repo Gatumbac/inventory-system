@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1 1 240px;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.empty {
+  text-align: center;
+  padding: 24px;
+}

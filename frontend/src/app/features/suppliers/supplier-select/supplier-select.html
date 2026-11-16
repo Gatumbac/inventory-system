@@ -1,0 +1,33 @@
+<mat-form-field appearance="outline">
+  <mat-label>Proveedor</mat-label>
+  <input
+    matInput
+    #searchInput
+    [formControl]="control()"
+    [matAutocomplete]="auto"
+    (focus)="onFocus()"
+    (input)="onInput(searchInput.value)"
+  />
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayName">
+    @for (supplier of options(); track supplier.id) {
+      <mat-option [value]="supplier">{{ supplier.name }}</mat-option>
+    }
+    @if (loaded() && options().length === 0) {
+      <mat-option disabled>Sin resultados</mat-option>
+    }
+    @if (hasMore()) {
+      <button
+        mat-button
+        type="button"
+        class="more"
+        (mousedown)="$event.preventDefault()"
+        (click)="loadMore()"
+      >
+        Cargar más…
+      </button>
+    }
+  </mat-autocomplete>
+  @if (control().hasError('supplierRequired')) {
+    <mat-error>Selecciona un proveedor de la lista</mat-error>
+  }
+</mat-form-field>

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse } from './auth.models';
+import { CurrentUser, LoginRequest, LoginResponse } from './auth.models';
 
 const TOKEN_KEY = 'token';
 const ROLE_KEY = 'role';
@@ -20,6 +20,10 @@ export class AuthService {
         localStorage.setItem(EMAIL_KEY, request.email);
       }),
     );
+  }
+
+  me() {
+    return this.http.get<CurrentUser>(`${environment.apiUrl}/auth/me`);
   }
 
   logout(): void {

@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { PagedResult, Product, ProductRequest } from './product.models';
+import { PagedResult } from '../../core/http/paged-result';
+import { Product, ProductRequest } from './product.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {

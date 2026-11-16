@@ -7,3 +7,10 @@ export interface LoginResponse {
   token: string;
   role: string;
 }
+
+export interface CurrentUser {
+  name: string;
+  lastName: string;
+  email: string;
+  role: string;
+}

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { PagedResult } from '../../core/http/paged-result';
-import { Product, ProductRequest } from './product.models';
+import { PriceMatrix, Product, ProductRequest } from './product.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -10,12 +10,13 @@ export class ProductService {
   private readonly url = `${environment.apiUrl}/products`;
 
   list(page: number, pageSize: number, search: string) {
-    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
-    if (search) {
-      params = params.set('search', search);
-    }
-
+    const params = this.pageParams(page, pageSize, search);
     return this.http.get<PagedResult<Product>>(this.url, { params });
+  }
+
+  priceMatrix(page: number, pageSize: number, search: string) {
+    const params = this.pageParams(page, pageSize, search);
+    return this.http.get<PriceMatrix>(`${this.url}/price-matrix`, { params });
   }
 
   get(id: number) {
@@ -32,5 +33,10 @@ export class ProductService {
 
   remove(id: number) {
     return this.http.delete<void>(`${this.url}/${id}`);
+  }
+
+  private pageParams(page: number, pageSize: number, search: string) {
+    const params = new HttpParams().set('page', page).set('pageSize', pageSize);
+    return search ? params.set('search', search) : params;
   }
 }

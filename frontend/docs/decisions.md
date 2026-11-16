@@ -23,7 +23,6 @@
 | The row chevron sat 3 px above the row menu. | `mat-icon` sets `display: inline-block` with the same specificity, so my `display: block` never applied. Moved the rule under `.data-table .cell-chevron`. Measured in the browser, both icons now share the same center. |
 | The attribute column made rows grow to about 100 px. | One line with ellipsis and a `title`. |
 | Tests failed because the API URL was different from what I expected. | In tests `environment.apiUrl` is the full `http://localhost:5078/api`, so specs build URLs from it. |
-| The reference repo for the UI polish (billing-admin) uses Tailwind and shadcn. | Copied the structure and proportions only (panels, label/value rows, one control height), not the stack or the colors. |
 
 ## Pending
 

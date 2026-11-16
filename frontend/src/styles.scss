@@ -324,8 +324,6 @@ a[mat-icon-button] {
 }
 
 .row-chevron {
-  display: block;
-  margin-left: auto;
   color: var(--mat-sys-on-surface-variant);
   transition:
     transform 150ms var(--app-ease),
@@ -346,6 +344,11 @@ a[mat-icon-button] {
     width: 40px;
     padding-left: 0;
     text-align: right;
+
+    .row-chevron {
+      display: block;
+      margin-left: auto;
+    }
   }
 }
 

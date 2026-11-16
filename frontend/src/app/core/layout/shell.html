@@ -14,6 +14,10 @@
     <span class="brand">Inventory System</span>
 
     <nav>
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="navOpen.set(false)">
+        <mat-icon fontSet="material-symbols-outlined">home</mat-icon>
+        Inicio
+      </a>
       <a routerLink="/products" routerLinkActive="active" (click)="navOpen.set(false)">
         <mat-icon fontSet="material-symbols-outlined">inventory_2</mat-icon>
         Productos

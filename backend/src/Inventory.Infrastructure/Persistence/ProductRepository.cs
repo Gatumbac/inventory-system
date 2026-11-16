@@ -28,6 +28,20 @@ public class ProductRepository : IProductRepository
         return await PagedQuery.ToPagedAsync(products, filterRequest);
     }
 
+    public async Task<PagedResult<Product>> GetPagedWithSuppliersAsync(ProductFilterRequest filterRequest)
+    {
+        var query = _context.Products
+            .AsNoTracking()
+            .Include(p => p.ProductSuppliers)
+            .ThenInclude(ps => ps.Supplier);
+
+        var products = ApplySearch(query, filterRequest.Search)
+            .OrderBy(p => p.Name)
+            .ThenBy(p => p.Id);
+
+        return await PagedQuery.ToPagedAsync(products, filterRequest);
+    }
+
     private static IQueryable<Product> ApplySearch(IQueryable<Product> query, string? search)
     {
         var term = search?.Trim();

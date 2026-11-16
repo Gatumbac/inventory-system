@@ -9,7 +9,11 @@ export const routes: Routes = [
     loadComponent: () => import('./core/layout/shell').then((m) => m.Shell),
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'products' },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+      },
       {
         path: 'products',
         loadComponent: () =>
@@ -33,6 +37,11 @@ export const routes: Routes = [
           import('./features/products/product-form/product-form').then((m) => m.ProductForm),
       },
       {
+        path: 'price-matrix',
+        loadComponent: () =>
+          import('./features/products/price-matrix/price-matrix').then((m) => m.PriceMatrix),
+      },
+      {
         path: 'suppliers',
         loadComponent: () =>
           import('./features/suppliers/supplier-list/supplier-list').then((m) => m.SupplierList),
@@ -48,6 +57,16 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () =>
           import('./features/suppliers/supplier-form/supplier-form').then((m) => m.SupplierForm),
+      },
+      {
+        path: 'users',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/users/user-list/user-list').then((m) => m.UserList),
+      },
+      {
+        path: 'users/new',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/users/user-form/user-form').then((m) => m.UserForm),
       },
     ],
   },

@@ -1,0 +1,71 @@
+<header class="page-header">
+  <h1>Matriz de precios</h1>
+</header>
+
+<p class="meta intro">
+  Precio por proveedor de cada producto. Si un proveedor tiene varios lotes, se muestra el más bajo.
+</p>
+
+<app-search-field label="Buscar por código o nombre" (search)="onSearch($event)" />
+
+<div class="data-surface">
+  @if (loading() && rows().length > 0) {
+    <mat-progress-bar class="loading-bar" mode="indeterminate" aria-label="Cargando" />
+  }
+
+  <div class="matrix-scroll">
+    <table mat-table class="data-table matrix-table" [dataSource]="rows()">
+      <ng-container matColumnDef="product" sticky>
+        <th mat-header-cell *matHeaderCellDef>Producto</th>
+        <td mat-cell *matCellDef="let row" class="cell-name">
+          <a [routerLink]="['/products', row.productId]">{{ row.name }}</a>
+          <span class="meta numeric code">{{ row.code }}</span>
+        </td>
+      </ng-container>
+
+      @for (supplier of suppliers(); track supplier.id) {
+        <ng-container [matColumnDef]="supplierColumn(supplier)">
+          <th mat-header-cell *matHeaderCellDef class="cell-numeric">{{ supplier.name }}</th>
+          <td mat-cell *matCellDef="let row" class="cell-numeric numeric">
+            @let price = priceOf(row, supplier);
+            @if (price !== null) {
+              {{ price | currency }}
+            } @else {
+              <span class="meta" aria-label="Sin precio">—</span>
+            }
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="columns()"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns()"></tr>
+    </table>
+  </div>
+
+  @if (loading() && rows().length === 0) {
+    <app-skeleton-rows [widths]="[30, 18, 18, 18]" />
+  }
+
+  @if (!loading() && !failed() && totalCount() === 0) {
+    <div class="empty-state">
+      @if (search()) {
+        <p class="empty-title">Sin resultados para «{{ search() }}»</p>
+        <p class="meta">Revisa la ortografía o prueba con otro código o nombre.</p>
+        <button mat-stroked-button (click)="searchField().clear()">Limpiar búsqueda</button>
+      } @else {
+        <p class="empty-title">Aún no hay productos</p>
+      }
+    </div>
+  }
+
+  @if (totalCount() > 0) {
+    <mat-paginator
+      [length]="totalCount()"
+      [pageSize]="pageSize()"
+      [pageIndex]="page() - 1"
+      [pageSizeOptions]="pageSizeOptions"
+      [hidePageSize]="totalCount() <= pageSizeOptions[0]"
+      (page)="onPage($event)"
+    />
+  }
+</div>

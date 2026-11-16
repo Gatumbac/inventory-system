@@ -1,0 +1,80 @@
+<header class="page-header greeting">
+  <h1>{{ greeting() }}</h1>
+  <p class="meta">Este es el resumen de tu inventario.</p>
+</header>
+
+<section class="stats" aria-label="Resumen">
+  @let summary = data();
+  <div class="panel stat">
+    <mat-icon fontSet="material-symbols-outlined">inventory_2</mat-icon>
+    @if (summary) {
+      <span class="stat-value numeric">{{ summary.productCount | number }}</span>
+    } @else {
+      <span class="skeleton stat-skeleton"></span>
+    }
+    <span class="meta">Productos</span>
+  </div>
+  <div class="panel stat">
+    <mat-icon fontSet="material-symbols-outlined">local_shipping</mat-icon>
+    @if (summary) {
+      <span class="stat-value numeric">{{ summary.supplierCount | number }}</span>
+    } @else {
+      <span class="skeleton stat-skeleton"></span>
+    }
+    <span class="meta">Proveedores</span>
+  </div>
+  <div class="panel stat">
+    <mat-icon fontSet="material-symbols-outlined">deployed_code</mat-icon>
+    @if (summary) {
+      <span class="stat-value numeric">{{ summary.totalStock | number }}</span>
+    } @else {
+      <span class="skeleton stat-skeleton"></span>
+    }
+    <span class="meta">Unidades en stock</span>
+  </div>
+  <div class="panel stat">
+    <mat-icon fontSet="material-symbols-outlined">payments</mat-icon>
+    @if (summary) {
+      <span class="stat-value numeric">{{ summary.inventoryValue | currency }}</span>
+    } @else {
+      <span class="skeleton stat-skeleton"></span>
+    }
+    <span class="meta">Valor del inventario</span>
+  </div>
+</section>
+
+<section class="panel">
+  <header class="panel-header">
+    <div class="panel-heading">
+      <h2 class="panel-title">Stock bajo</h2>
+      <span class="meta">Lotes con 5 unidades o menos</span>
+    </div>
+  </header>
+
+  @if (data(); as summary) {
+    @if (summary.lowStock.length > 0) {
+      <ul class="low-stock">
+        @for (item of summary.lowStock; track $index) {
+          <li>
+            <a [routerLink]="['/products', item.productId]">
+              <span class="item-main">
+                <span class="item-name">{{ item.productName }}</span>
+                <span class="meta"
+                  >{{ item.supplierName }} · {{ item.lotNumber ?? 'Sin lote' }}</span
+                >
+              </span>
+              <span class="item-stock numeric">{{ item.stock }} u.</span>
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="meta empty">Todo en orden, ningún lote con stock bajo.</p>
+    }
+  } @else {
+    <div class="panel-body">
+      <span class="skeleton row-skeleton"></span>
+      <span class="skeleton row-skeleton"></span>
+    </div>
+  }
+</section>

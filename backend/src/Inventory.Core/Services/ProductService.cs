@@ -21,6 +21,19 @@ public class ProductService : IProductService
         return page.Map(p => ToProductResponse(p));
     }
 
+    public async Task<PriceMatrixResponse> GetPriceMatrixAsync(ProductFilterRequest filterRequest)
+    {
+        var page = await _products.GetPagedWithSuppliersAsync(filterRequest);
+
+        var response = new PriceMatrixResponse()
+        {
+            Suppliers = ToPriceMatrixSuppliers(page.Items),
+            Products = page.Map(p => ToPriceMatrixRow(p))
+        };
+
+        return response;
+    }
+
     public async Task<ProductResponse?> GetProductAsync(int id)
     {
         var product = await _products.GetByIdAsync(id);
@@ -91,6 +104,57 @@ public class ProductService : IProductService
             Name = product.Name,
             Description = product.Description,
             Attributes = attributes
+        };
+
+        return response;
+    }
+
+    private static List<PriceMatrixSupplierResponse> ToPriceMatrixSuppliers(IEnumerable<Product> products)
+    {
+        return products
+            .SelectMany(p => p.ProductSuppliers)
+            .Select(ps => ps.Supplier)
+            .DistinctBy(s => s.Id)
+            .OrderBy(s => s.Name)
+            .Select(s => ToPriceMatrixSupplier(s))
+            .ToList();
+    }
+
+    private static PriceMatrixSupplierResponse ToPriceMatrixSupplier(Supplier supplier)
+    {
+        var response = new PriceMatrixSupplierResponse()
+        {
+            Id = supplier.Id,
+            Name = supplier.Name
+        };
+
+        return response;
+    }
+
+    private static PriceMatrixRowResponse ToPriceMatrixRow(Product product)
+    {
+        var prices = product.ProductSuppliers
+            .GroupBy(ps => ps.SupplierId)
+            .Select(g => ToPriceMatrixPrice(g.Key, g.Min(ps => ps.Price)))
+            .ToList();
+
+        var response = new PriceMatrixRowResponse()
+        {
+            ProductId = product.Id,
+            Code = product.Code,
+            Name = product.Name,
+            Prices = prices
+        };
+
+        return response;
+    }
+
+    private static PriceMatrixPriceResponse ToPriceMatrixPrice(int supplierId, decimal price)
+    {
+        var response = new PriceMatrixPriceResponse()
+        {
+            SupplierId = supplierId,
+            Price = price
         };
 
         return response;

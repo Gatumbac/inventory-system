@@ -1,0 +1,24 @@
+.intro {
+  margin: 0 0 var(--app-space-3);
+}
+
+.matrix-scroll {
+  overflow-x: auto;
+}
+
+.matrix-table {
+  display: table;
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+
+  td.mat-mdc-table-sticky {
+    background: var(--mat-sys-surface-container-lowest);
+  }
+
+  .code {
+    display: block;
+  }
+}

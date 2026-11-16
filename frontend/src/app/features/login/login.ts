@@ -24,6 +24,7 @@ export class Login {
   private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
+  protected readonly showPassword = signal(false);
   protected readonly form = inject(NonNullableFormBuilder).group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],

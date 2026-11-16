@@ -1,0 +1,15 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 var(--app-space-4);
+
+  app-search-field {
+    flex: 1 1 240px;
+  }
+
+  mat-button-toggle-group {
+    --mat-standard-button-toggle-height: 40px;
+    margin-bottom: var(--app-space-4);
+  }
+}

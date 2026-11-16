@@ -16,13 +16,15 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
         var adminRole = new Role()
         {
             Id = 1,
-            Name = RoleNames.Admin
+            Name = RoleNames.Admin,
+            Description = "Acceso total: puede crear, editar y eliminar"
         };
 
         var viewerRole = new Role()
         {
             Id = 2,
-            Name = RoleNames.Viewer
+            Name = RoleNames.Viewer,
+            Description = "Solo lectura"
         };
 
         builder.HasData(adminRole, viewerRole);

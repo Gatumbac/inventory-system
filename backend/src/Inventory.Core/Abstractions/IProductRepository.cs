@@ -7,6 +7,7 @@ namespace Inventory.Core.Abstractions;
 public interface IProductRepository
 {
     Task<PagedResult<Product>> GetPagedAsync(ProductFilterRequest filterRequest);
+    Task<PagedResult<Product>> GetPagedWithSuppliersAsync(ProductFilterRequest filterRequest);
     Task<Product?> GetByIdAsync(int id);
     Task AddAsync(Product product);
     Task<Product?> GetByIdForUpdateAsync(int id);

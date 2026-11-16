@@ -6,6 +6,7 @@ namespace Inventory.Core.Abstractions;
 public interface IProductService
 {
     Task<PagedResult<ProductResponse>> GetProductsAsync(ProductFilterRequest filterRequest);
+    Task<PriceMatrixResponse> GetPriceMatrixAsync(ProductFilterRequest filterRequest);
     Task<ProductResponse?> GetProductAsync(int id);
     Task<SaveProductResult> CreateProductAsync(ProductRequest productRequest);
     Task<SaveProductResult> UpdateProductAsync(int id, ProductRequest productRequest);

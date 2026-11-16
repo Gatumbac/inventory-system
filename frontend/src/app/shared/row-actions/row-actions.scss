@@ -2,3 +2,12 @@
   --mat-menu-item-label-text-color: var(--mat-sys-error);
   --mat-menu-item-icon-color: var(--mat-sys-error);
 }
+
+button[mat-icon-button] {
+  --mat-icon-button-icon-color: var(--mat-sys-on-surface-variant);
+
+  &:hover,
+  &:focus-visible {
+    --mat-icon-button-icon-color: var(--mat-sys-on-surface);
+  }
+}

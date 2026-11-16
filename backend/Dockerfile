@@ -10,6 +10,28 @@ RUN dotnet restore src/Inventory.Api/Inventory.Api.csproj
 COPY src/ src/
 RUN dotnet publish src/Inventory.Api/Inventory.Api.csproj -c Release -o /app --no-restore
 
+FROM build AS bundle
+COPY dotnet-tools.json ./
+RUN dotnet tool restore
+# EF tooling executes Program.cs, which validates these settings; the values are build-time placeholders only
+RUN ConnectionStrings__Default="Server=placeholder" \
+    Jwt__Key="build-time-placeholder-key-not-used-at-runtime" \
+    Jwt__Issuer="placeholder" \
+    Jwt__Audience="placeholder" \
+    Cors__AllowedOrigins__0="http://localhost" \
+    dotnet ef migrations bundle \
+    --project src/Inventory.Infrastructure \
+    --startup-project src/Inventory.Api \
+    --self-contained -r linux-x64 \
+    -o /bundle/efbundle
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS migrate
+WORKDIR /app
+COPY --from=bundle /bundle/efbundle ./
+COPY src/Inventory.Api/appsettings.json ./
+USER $APP_UID
+ENTRYPOINT ["./efbundle"]
+
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .

@@ -56,17 +56,19 @@ Expected endpoints:
 
 ### Running the API in Docker
 
-The `api` service builds `backend/Dockerfile` and connects to the `db` service. Migrations are not applied automatically, so run them once from the host (requires the .NET SDK) after the database is up:
+The `api` service builds `backend/Dockerfile` and connects to the `db` service. Migrations and seed data are applied automatically by the one-shot `migrate` service (an EF Core migration bundle built in the Dockerfile), and `api` starts only after it finishes successfully:
+
+```bash
+docker compose up --build
+```
+
+No local .NET SDK is needed. For local development with `dotnet run`, apply migrations from the host instead:
 
 ```bash
 docker compose up -d db
 cd backend
 dotenv -e ../.env -- dotnet ef database update --project src/Inventory.Infrastructure --startup-project src/Inventory.Api
-cd ..
-docker compose up --build api
 ```
-
-Until migrations are applied, login and the product endpoints fail because the schema and seed data do not exist.
 
 ## Configuration
 

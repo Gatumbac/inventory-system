@@ -15,5 +15,37 @@ services:
       retries: 10
       start_period: 30s
 
+  migrate:
+    build:
+      context: ./backend
+      target: migrate
+    env_file: .env
+    environment:
+      ConnectionStrings__Default: "Server=db;Database=Inventory;User ID=sa;Password=${DB_PASSWORD};TrustServerCertificate=True"
+      Cors__AllowedOrigins__0: ${CORS_ORIGIN:-http://localhost:4200}
+      Serilog__Using__0: Serilog.Sinks.Console
+      Serilog__Using__1: Serilog.Sinks.File
+      Serilog__WriteTo__1__Args__path: /tmp/logs/log-.txt
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build: ./backend
+    env_file: .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "Server=db;Database=Inventory;User ID=sa;Password=${DB_PASSWORD};TrustServerCertificate=True"
+      Cors__AllowedOrigins__0: ${CORS_ORIGIN:-http://localhost:4200}
+      Serilog__WriteTo__1__Args__path: /tmp/logs/log-.txt
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
 volumes:
   db-data:

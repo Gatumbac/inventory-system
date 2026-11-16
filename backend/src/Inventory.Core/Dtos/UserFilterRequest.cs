@@ -6,4 +6,6 @@ public class UserFilterRequest : PageRequest
 {
     [StringLength(100)]
     public string? Search { get; set; }
+
+    public bool Inactive { get; set; }
 }

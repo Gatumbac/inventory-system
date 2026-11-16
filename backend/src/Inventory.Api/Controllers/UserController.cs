@@ -74,4 +74,26 @@ public class UserController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost("{id}/reactivate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> ReactivateUser(int id)
+    {
+        var response = await _userService.ReactivateUserAsync(id);
+        if (response == ReactivateUserResult.NotFound)
+        {
+            return Problem(statusCode: StatusCodes.Status404NotFound, title: ErrorMessages.UserNotFound);
+        }
+
+        if (response == ReactivateUserResult.DuplicateEmail)
+        {
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: ErrorMessages.UserEmailDuplicated);
+        }
+
+        return NoContent();
+    }
 }

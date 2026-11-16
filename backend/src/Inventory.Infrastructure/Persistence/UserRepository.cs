@@ -34,11 +34,11 @@ public class UserRepository : IUserRepository
 
     public async Task<PagedResult<User>> GetPagedAsync(UserFilterRequest filterRequest)
     {
-        var query = _context.Users
-            .AsNoTracking()
-            .Include(u => u.Role);
+        var query = filterRequest.Inactive
+            ? _context.Users.IgnoreQueryFilters().Where(u => u.DeletedAt != null)
+            : _context.Users;
 
-        var users = ApplySearch(query, filterRequest.Search)
+        var users = ApplySearch(query.AsNoTracking().Include(u => u.Role), filterRequest.Search)
             .OrderBy(u => u.Name)
             .ThenBy(u => u.LastName)
             .ThenBy(u => u.Id);
@@ -88,6 +88,20 @@ public class UserRepository : IUserRepository
     public async Task RemoveAsync(User user)
     {
         user.DeletedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<User?> GetInactiveByIdForUpdateAsync(int id)
+    {
+        return await _context.Users
+            .IgnoreQueryFilters()
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt != null);
+    }
+
+    public async Task ReactivateAsync(User user)
+    {
+        user.DeletedAt = null;
         await _context.SaveChangesAsync();
     }
 }

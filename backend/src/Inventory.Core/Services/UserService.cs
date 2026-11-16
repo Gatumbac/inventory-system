@@ -59,6 +59,23 @@ public class UserService : IUserService
         return DeleteUserResult.Deleted;
     }
 
+    public async Task<ReactivateUserResult> ReactivateUserAsync(int id)
+    {
+        var user = await _users.GetInactiveByIdForUpdateAsync(id);
+        if (user == null)
+        {
+            return ReactivateUserResult.NotFound;
+        }
+
+        if (await _users.EmailExistsAsync(user.Email))
+        {
+            return ReactivateUserResult.DuplicateEmail;
+        }
+
+        await _users.ReactivateAsync(user);
+        return ReactivateUserResult.Reactivated;
+    }
+
     private async Task<User> ToUser(UserRequest userRequest, string email)
     {
         var user = new User()

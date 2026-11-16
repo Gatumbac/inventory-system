@@ -10,13 +10,14 @@ Product inventory system: Angular, .NET 10 and SQL Server. Users log in with JWT
 
 ![Product detail with suppliers and lots](frontend/docs/ui/product_detail.png)
 
-## Run the API with Docker
+## Run with Docker
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
+- App: http://localhost:4200
 - API: http://localhost:8080
 - Swagger: http://localhost:8080/swagger
 

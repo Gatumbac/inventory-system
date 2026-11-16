@@ -40,6 +40,11 @@ public class FakeProductRepository : IProductRepository
         return Task.FromResult(page);
     }
 
+    public Task<PagedResult<Product>> GetPagedWithSuppliersAsync(ProductFilterRequest filterRequest)
+    {
+        return GetPagedAsync(filterRequest);
+    }
+
     public Task<Product?> GetByIdAsync(int id)
     {
         return Task.FromResult(Products.FirstOrDefault(p => p.Id == id));

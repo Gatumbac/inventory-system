@@ -1,4 +1,5 @@
 using Inventory.Core.Dtos;
+using Inventory.Core.Entities;
 using Inventory.Core.Results;
 using Inventory.Core.Services;
 using Inventory.Core.Tests.Fakes;
@@ -96,6 +97,72 @@ public class ProductServiceTests
 
         Assert.Equal(DeleteProductResult.Deleted, result);
         Assert.Single(_products.Removed);
+    }
+
+    [Fact]
+    public async Task GetPriceMatrix_SameSupplierTwoLots_ReturnsLowestPrice()
+    {
+        var product = _products.Seed("AB-1");
+        var supplier = NewSupplier(1, "Proveedor A");
+        AddPrice(product, supplier, 300m);
+        AddPrice(product, supplier, 250m);
+
+        var result = await _service.GetPriceMatrixAsync(new ProductFilterRequest());
+
+        var price = Assert.Single(result.Products.Items[0].Prices);
+        Assert.Equal(supplier.Id, price.SupplierId);
+        Assert.Equal(250m, price.Price);
+    }
+
+    [Fact]
+    public async Task GetPriceMatrix_ReturnsDistinctSuppliersOrderedByName()
+    {
+        var first = _products.Seed("AB-1");
+        var second = _products.Seed("AB-2");
+        var supplierB = NewSupplier(1, "Proveedor B");
+        var supplierA = NewSupplier(2, "Proveedor A");
+        AddPrice(first, supplierB, 100m);
+        AddPrice(second, supplierB, 200m);
+        AddPrice(second, supplierA, 150m);
+
+        var result = await _service.GetPriceMatrixAsync(new ProductFilterRequest());
+
+        Assert.Equal(new[] { "Proveedor A", "Proveedor B" }, result.Suppliers.Select(s => s.Name));
+    }
+
+    [Fact]
+    public async Task GetPriceMatrix_ProductWithoutSuppliers_ReturnsEmptyPrices()
+    {
+        _products.Seed("AB-1");
+
+        var result = await _service.GetPriceMatrixAsync(new ProductFilterRequest());
+
+        Assert.Empty(result.Suppliers);
+        Assert.Empty(result.Products.Items[0].Prices);
+    }
+
+    private static Supplier NewSupplier(int id, string name)
+    {
+        var supplier = new Supplier()
+        {
+            Id = id,
+            Name = name
+        };
+
+        return supplier;
+    }
+
+    private static void AddPrice(Product product, Supplier supplier, decimal price)
+    {
+        var productSupplier = new ProductSupplier()
+        {
+            ProductId = product.Id,
+            SupplierId = supplier.Id,
+            Supplier = supplier,
+            Price = price
+        };
+
+        product.ProductSuppliers.Add(productSupplier);
     }
 
     private static ProductRequest NewRequest(string code)

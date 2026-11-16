@@ -35,10 +35,15 @@ public class AuthController : ControllerBase
     [HttpGet("me")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public ActionResult Me()
+    public async Task<ActionResult<MeResponse>> Me()
     {
-        var email = User.FindFirst("email")?.Value;
-        var role = User.FindFirst("role")?.Value;
-        return Ok(new { email, role });
+        var userId = int.Parse(User.FindFirst("sub")!.Value);
+        var response = await _authService.GetCurrentUserAsync(userId);
+        if (response == null)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(response);
     }
 }

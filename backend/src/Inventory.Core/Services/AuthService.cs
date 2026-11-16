@@ -36,4 +36,22 @@ public class AuthService : IAuthService
         };
         return response;
     }
+
+    public async Task<MeResponse?> GetCurrentUserAsync(int userId)
+    {
+        var user = await _users.GetByIdAsync(userId);
+        if (user == null)
+        {
+            return null;
+        }
+
+        var response = new MeResponse()
+        {
+            Name = user.Name,
+            LastName = user.LastName,
+            Email = user.Email,
+            Role = user.Role.Name
+        };
+        return response;
+    }
 }

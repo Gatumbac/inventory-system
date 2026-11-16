@@ -103,4 +103,4 @@ dotnet test --filter CategoryServiceTests
 2. Swagger, as Admin: POST → 201, POST the same name again → 409, GET list → paged, PUT → 200, DELETE → 204, GET by id → 404.
 3. As Viewer: POST → 403.
 
-Next: [frontend/new-screen.md](../frontend/new-screen.md).
+Next: [frontend/new-screen.md](../../../frontend/docs/playbook/new-screen.md).

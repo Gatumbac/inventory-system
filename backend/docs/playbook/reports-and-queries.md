@@ -147,4 +147,4 @@ To see the generated SQL in the API console, change the `Microsoft.EntityFramewo
 
 The fake repositories hold lists in memory. For a report computed in the repository, the service just passes it through, so a unit test adds little. Show it in Swagger instead, and say that an integration test against a real database would be the right test for the query.
 
-Next: [frontend/report-page.md](../frontend/report-page.md).
+Next: [frontend/report-page.md](../../../frontend/docs/playbook/report-page.md).

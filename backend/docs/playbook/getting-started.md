@@ -1,6 +1,8 @@
-# Getting started on the host
+# Getting started on the host: backend
 
 For a live change, run SQL Server in Docker and the API and the frontend on the host. Then every save reloads quickly and you can read the logs in the terminal.
+
+The frontend side is in [frontend getting started](../../../frontend/docs/playbook/getting-started.md).
 
 ## Ports
 
@@ -47,20 +49,9 @@ dotenv -e ../.env -- dotnet run --project src/Inventory.Api
 
 `database update` also runs the demo seeder. Skip it if the database is already up to date.
 
-Terminal 3, frontend (from `frontend/`):
-
-```bash
-cd frontend
-npm ci
-npm start
-```
-
-Only run `npm ci` if `node_modules` is missing. `npm start` runs `ng serve`, which talks directly to `http://localhost:5078/api` (see `src/environments/environment.development.ts`). CORS already allows `http://localhost:4200`.
-
 ## Hot reload
 
-- Frontend: `ng serve` rebuilds on save.
-- Backend: stop with `Ctrl+C` and run again. Or use watch mode:
+Stop with `Ctrl+C` and run again. Or use watch mode:
 
 ```bash
 dotenv -e ../.env -- dotnet watch --project src/Inventory.Api
@@ -75,11 +66,6 @@ cd backend
 dotnet format
 dotnet build
 dotnet test
-
-cd ../frontend
-npx prettier --write src
-npx ng test --watch=false
-npx ng build
 ```
 
 These are the same checks CI runs (`.github/workflows/ci-cd.yml`).

@@ -131,4 +131,4 @@ public async Task CreateSupplier_TrimsPhone()
 2. Swagger: `PUT /api/suppliers/{id}` with `phone`, then `GET` returns it.
 3. A value that is too long returns 400 with the message in `errors`.
 
-Next: [frontend/add-field.md](../frontend/add-field.md).
+Next: [frontend/add-field.md](../../../frontend/docs/playbook/add-field.md).

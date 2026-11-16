@@ -1,6 +1,6 @@
 # Report or read-only page
 
-**When:** the backend has a report endpoint ([backend/reports-and-queries.md](../backend/reports-and-queries.md)): stock per product, low stock, inventory value, a dashboard.
+**When:** the backend has a report endpoint ([backend/reports-and-queries.md](../../../backend/docs/playbook/reports-and-queries.md)): stock per product, low stock, inventory value, a dashboard.
 
 Two working examples are already in the app:
 

@@ -1,6 +1,6 @@
 # Add a field
 
-**When:** the backend now returns and accepts a new field ([backend/add-field.md](../backend/add-field.md)). Example: `phone` on suppliers.
+**When:** the backend now returns and accepts a new field ([backend/add-field.md](../../../backend/docs/playbook/add-field.md)). Example: `phone` on suppliers.
 
 ## Files, in order
 

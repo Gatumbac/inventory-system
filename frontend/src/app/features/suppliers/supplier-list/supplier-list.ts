@@ -10,6 +10,7 @@ import { SpanishPaginatorIntl } from '../../../core/layout/paginator-intl';
 import { NotificationService } from '../../../core/notifications/notification.service';
 import { RowActions } from '../../../shared/row-actions/row-actions';
 import { SearchField } from '../../../shared/search-field/search-field';
+import { SkeletonRows } from '../../../shared/skeleton-rows/skeleton-rows';
 import { Supplier } from '../supplier.models';
 import { SupplierService } from '../supplier.service';
 
@@ -23,6 +24,7 @@ import { SupplierService } from '../supplier.service';
     RouterLink,
     RowActions,
     SearchField,
+    SkeletonRows,
   ],
   templateUrl: './supplier-list.html',
   host: { class: 'page' },

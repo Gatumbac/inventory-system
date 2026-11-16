@@ -42,6 +42,7 @@ export class ProductForm {
 
   protected readonly isEdit = this.id !== null;
   protected readonly submitting = signal(false);
+  protected readonly loading = signal(this.id !== null);
   protected readonly form = this.fb.group({
     code: [
       '',
@@ -72,6 +73,7 @@ export class ProductForm {
           product.attributes.forEach((a) =>
             this.attributes.push(this.newAttribute(a.name, a.value)),
           );
+          this.loading.set(false);
         });
     }
   }

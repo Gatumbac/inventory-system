@@ -8,7 +8,7 @@
 <app-search-field label="Buscar por nombre" (search)="onSearch($event)" />
 
 <div class="data-surface">
-  @if (loading()) {
+  @if (loading() && suppliers().length > 0) {
     <mat-progress-bar class="loading-bar" mode="indeterminate" aria-label="Cargando" />
   }
 
@@ -41,6 +41,10 @@
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
     <tr mat-row *matRowDef="let row; columns: columns"></tr>
   </table>
+
+  @if (loading() && suppliers().length === 0) {
+    <app-skeleton-rows [widths]="[30, 55]" />
+  }
 
   <ul class="card-list">
     @for (supplier of suppliers(); track supplier.id) {
@@ -78,7 +82,7 @@
     </div>
   }
 
-  @if (totalCount() > pageSizeOptions[0]) {
+  @if (totalCount() > 0) {
     <mat-paginator
       [length]="totalCount()"
       [pageSize]="pageSize()"

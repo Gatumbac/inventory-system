@@ -1,0 +1,14 @@
+<div role="status" aria-label="Cargando">
+  @for (item of items(); track item) {
+    <div class="row" aria-hidden="true">
+      @for (width of widths(); track $index) {
+        <span class="skeleton bar" [style.flex]="'0 1 ' + width + '%'"></span>
+      }
+    </div>
+    <div class="card" aria-hidden="true">
+      <span class="skeleton title"></span>
+      <span class="skeleton meta"></span>
+      <span class="skeleton line"></span>
+    </div>
+  }
+</div>

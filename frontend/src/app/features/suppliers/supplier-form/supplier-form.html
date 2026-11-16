@@ -1,30 +1,40 @@
-<a mat-button class="back" routerLink="/suppliers">← Proveedores</a>
+<a mat-button class="back" routerLink="/suppliers">
+  <mat-icon fontSet="material-symbols-outlined">arrow_back</mat-icon>
+  Proveedores
+</a>
 
 <header class="page-header">
   <h1>{{ isEdit ? 'Editar proveedor' : 'Nuevo proveedor' }}</h1>
 </header>
 
-<form class="form-column" [formGroup]="form" (ngSubmit)="submit()">
-  <mat-form-field appearance="outline">
-    <mat-label>Nombre</mat-label>
-    <input matInput formControlName="name" />
-    @if (form.controls.name.hasError('required')) {
-      <mat-error>El nombre es obligatorio</mat-error>
-    } @else if (form.controls.name.hasError('maxlength')) {
-      <mat-error>Máximo 150 caracteres</mat-error>
-    }
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Descripción</mat-label>
-    <textarea matInput rows="3" formControlName="description"></textarea>
-    @if (form.controls.description.hasError('maxlength')) {
-      <mat-error>Máximo 500 caracteres</mat-error>
-    }
-  </mat-form-field>
-
-  <div class="form-actions">
-    <a mat-button routerLink="/suppliers">Cancelar</a>
-    <button mat-flat-button type="submit" [disabled]="submitting()">Guardar</button>
+@if (loading()) {
+  <div class="form-skeleton" role="status" aria-label="Cargando">
+    <span class="skeleton sk-field"></span>
+    <span class="skeleton sk-area"></span>
   </div>
-</form>
+} @else {
+  <form class="form-column" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>El nombre es obligatorio</mat-error>
+      } @else if (form.controls.name.hasError('maxlength')) {
+        <mat-error>Máximo 150 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput rows="3" formControlName="description"></textarea>
+      @if (form.controls.description.hasError('maxlength')) {
+        <mat-error>Máximo 500 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-actions">
+      <a mat-button routerLink="/suppliers">Cancelar</a>
+      <button mat-flat-button type="submit" [disabled]="submitting()">Guardar</button>
+    </div>
+  </form>
+}

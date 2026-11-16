@@ -233,6 +233,81 @@ a[mat-icon-button] {
   }
 }
 
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background: var(--mat-sys-surface-container-high);
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.row-link {
+  cursor: pointer;
+}
+
+.data-table tr.row-link:focus-within td,
+.card-list li.row-link:hover,
+.card-list li.row-link:focus-within {
+  background: var(--mat-sys-surface-container-low);
+}
+
+.row-chevron {
+  color: var(--mat-sys-on-surface-variant);
+  transition:
+    transform 150ms var(--app-ease),
+    color 150ms var(--app-ease);
+}
+
+.row-link:hover .row-chevron {
+  color: var(--mat-sys-on-surface);
+  transform: translateX(2px);
+}
+
+.data-table {
+  .cell-actions.with-chevron {
+    padding-right: 0;
+  }
+
+  .cell-chevron {
+    width: 40px;
+    padding-left: 0;
+    text-align: right;
+  }
+}
+
+.form-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}
+
+.sk-field {
+  width: 100%;
+  height: 56px;
+}
+
+.sk-area {
+  width: 100%;
+  height: 100px;
+}
+
+.sk-heading {
+  width: 140px;
+  height: 20px;
+  margin-top: var(--app-space-5);
+}
+
+.card-end {
+  display: flex;
+  align-items: center;
+  align-self: center;
+}
+
 .loading-bar {
   --mat-progress-bar-active-indicator-height: 2px;
   --mat-progress-bar-track-height: 2px;
@@ -404,6 +479,14 @@ a[mat-icon-button] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+
+  .row-link:hover .row-chevron {
+    transform: none;
+  }
+
   *,
   *::before,
   *::after {

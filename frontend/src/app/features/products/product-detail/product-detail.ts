@@ -2,6 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -9,6 +10,7 @@ import { EMPTY, catchError, finalize } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { NotificationService } from '../../../core/notifications/notification.service';
 import { RowActions } from '../../../shared/row-actions/row-actions';
+import { SkeletonRows } from '../../../shared/skeleton-rows/skeleton-rows';
 import { Product } from '../product.models';
 import { ProductService } from '../product.service';
 import { ProductSupplier } from '../product-supplier.models';
@@ -20,10 +22,12 @@ import { ProductSupplierDialog } from '../product-supplier-dialog/product-suppli
   imports: [
     CurrencyPipe,
     MatButtonModule,
+    MatIconModule,
     MatProgressBarModule,
     MatTableModule,
     RouterLink,
     RowActions,
+    SkeletonRows,
   ],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',

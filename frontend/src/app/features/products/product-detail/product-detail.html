@@ -1,5 +1,8 @@
 @if (product(); as product) {
-  <a mat-button class="back" routerLink="/products">← Productos</a>
+  <a mat-button class="back" routerLink="/products">
+    <mat-icon fontSet="material-symbols-outlined">arrow_back</mat-icon>
+    Productos
+  </a>
 
   <header class="page-header">
     <div class="title-block">
@@ -35,7 +38,7 @@
     </div>
 
     <div class="data-surface">
-      @if (loadingLots()) {
+      @if (loadingLots() && lots().length > 0) {
         <mat-progress-bar class="loading-bar" mode="indeterminate" aria-label="Cargando" />
       }
 
@@ -75,6 +78,10 @@
         <tr mat-row *matRowDef="let row; columns: columns"></tr>
       </table>
 
+      @if (loadingLots() && lots().length === 0) {
+        <app-skeleton-rows [widths]="[30, 20, 15, 10]" [rows]="3" />
+      }
+
       <ul class="card-list">
         @for (lot of lots(); track lot.id) {
           <li>
@@ -106,4 +113,20 @@
       }
     </div>
   </section>
+} @else {
+  <div class="detail-skeleton" role="status" aria-label="Cargando">
+    <span class="skeleton sk-back"></span>
+    <span class="skeleton sk-title"></span>
+    <span class="skeleton sk-code"></span>
+    <span class="skeleton sk-line"></span>
+    <span class="skeleton sk-line short"></span>
+    <section>
+      <div class="section-header">
+        <span class="skeleton sk-section"></span>
+      </div>
+      <div class="data-surface">
+        <app-skeleton-rows [widths]="[30, 20, 15, 10]" [rows]="3" />
+      </div>
+    </section>
+  </div>
 }

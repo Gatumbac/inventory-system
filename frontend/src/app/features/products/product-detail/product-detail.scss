@@ -9,3 +9,38 @@
   max-width: 70ch;
   margin: 0;
 }
+
+.detail-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+}
+
+.sk-back {
+  width: 90px;
+  height: 20px;
+}
+
+.sk-title {
+  width: 40%;
+  height: 28px;
+}
+
+.sk-code {
+  width: 90px;
+  height: 14px;
+}
+
+.sk-line {
+  width: 70%;
+  height: 14px;
+
+  &.short {
+    width: 45%;
+  }
+}
+
+.sk-section {
+  width: 220px;
+  height: 20px;
+}

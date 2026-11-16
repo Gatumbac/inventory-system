@@ -1,0 +1,39 @@
+services:
+  db:
+    ports: !reset []
+    restart: unless-stopped
+
+  api:
+    ports: !reset []
+    environment:
+      Cors__AllowedOrigins__0: https://${SITE_HOST:?SITE_HOST is required}
+    restart: unless-stopped
+
+  migrate:
+    environment:
+      Cors__AllowedOrigins__0: https://${SITE_HOST:?SITE_HOST is required}
+
+  web:
+    ports: !reset []
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    environment:
+      SITE_HOST: ${SITE_HOST:?SITE_HOST is required}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+    depends_on:
+      - web
+      - api
+
+volumes:
+  caddy-data:
+  caddy-config:

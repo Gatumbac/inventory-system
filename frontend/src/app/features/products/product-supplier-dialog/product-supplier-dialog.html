@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>{{ existing ? 'Editar lote' : 'Agregar lote' }}</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content>
+    @if (existing) {
+      <p class="supplier-name">Proveedor: {{ existing.supplierName }}</p>
+    } @else {
+      <app-supplier-select [control]="form.controls.supplier" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Lote</mat-label>
+      <input matInput formControlName="lotNumber" />
+      @if (form.controls.lotNumber.hasError('maxlength')) {
+        <mat-error>Máximo 50 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Precio</mat-label>
+      <input matInput type="number" step="0.01" min="0" formControlName="price" />
+      @if (form.controls.price.hasError('required')) {
+        <mat-error>El precio es obligatorio</mat-error>
+      } @else if (form.controls.price.hasError('min')) {
+        <mat-error>Debe ser mayor o igual a cero</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Stock</mat-label>
+      <input matInput type="number" step="1" min="0" formControlName="stock" />
+      @if (form.controls.stock.hasError('required')) {
+        <mat-error>El stock es obligatorio</mat-error>
+      } @else if (form.controls.stock.hasError('min')) {
+        <mat-error>Debe ser mayor o igual a cero</mat-error>
+      } @else if (form.controls.stock.hasError('pattern') || form.controls.stock.hasError('max')) {
+        <mat-error>Debe ser un número entero válido</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancelar</button>
+    <button mat-flat-button type="submit" [disabled]="submitting()">Guardar</button>
+  </mat-dialog-actions>
+</form>

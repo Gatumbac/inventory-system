@@ -23,6 +23,11 @@ export const routes: Routes = [
           import('./features/products/product-form/product-form').then((m) => m.ProductForm),
       },
       {
+        path: 'products/:id',
+        loadComponent: () =>
+          import('./features/products/product-detail/product-detail').then((m) => m.ProductDetail),
+      },
+      {
         path: 'products/:id/edit',
         canActivate: [adminGuard],
         loadComponent: () =>

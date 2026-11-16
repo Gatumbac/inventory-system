@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lots-header {
+  margin-top: 24px;
+}
+
+.code {
+  margin-top: 0;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.empty {
+  text-align: center;
+  padding: 24px;
+}

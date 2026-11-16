@@ -129,6 +129,7 @@
       [pageSize]="pageSize()"
       [pageIndex]="page() - 1"
       [pageSizeOptions]="pageSizeOptions"
+      [hidePageSize]="totalCount() <= pageSizeOptions[0]"
       (page)="onPage($event)"
     />
   }

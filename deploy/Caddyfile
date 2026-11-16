@@ -1,0 +1,11 @@
+{$SITE_HOST} {
+	encode zstd gzip
+
+	handle /swagger* {
+		reverse_proxy api:8080
+	}
+
+	handle {
+		reverse_proxy web:80
+	}
+}

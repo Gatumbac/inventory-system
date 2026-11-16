@@ -8,7 +8,7 @@
 <app-search-field label="Buscar por código o nombre" (search)="onSearch($event)" />
 
 <div class="data-surface">
-  @if (loading()) {
+  @if (loading() && products().length > 0) {
     <mat-progress-bar class="loading-bar" mode="indeterminate" aria-label="Cargando" />
   }
 
@@ -43,7 +43,7 @@
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef class="cell-actions"></th>
-      <td mat-cell *matCellDef="let product" class="cell-actions">
+      <td mat-cell *matCellDef="let product" class="cell-actions with-chevron">
         <app-row-actions
           [label]="product.name"
           [editLink]="['/products', product.id, 'edit']"
@@ -52,13 +52,31 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="chevron">
+      <th mat-header-cell *matHeaderCellDef class="cell-chevron"></th>
+      <td mat-cell *matCellDef="let product" class="cell-chevron">
+        <mat-icon fontSet="material-symbols-outlined" class="row-chevron" aria-hidden="true"
+          >chevron_right</mat-icon
+        >
+      </td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: columns"
+      class="row-link"
+      (click)="open($event, row)"
+    ></tr>
   </table>
+
+  @if (loading() && products().length === 0) {
+    <app-skeleton-rows [widths]="[12, 24, 40, 18]" />
+  }
 
   <ul class="card-list">
     @for (product of products(); track product.id) {
-      <li>
+      <li class="row-link" (click)="open($event, product)">
         <div class="card-main">
           <a class="card-title" [routerLink]="['/products', product.id]">{{ product.name }}</a>
           <span class="meta numeric">{{ product.code }}</span>
@@ -69,13 +87,18 @@
             <span class="meta">{{ attribute.name }}: {{ attribute.value }}</span>
           }
         </div>
-        @if (isAdmin) {
-          <app-row-actions
-            [label]="product.name"
-            [editLink]="['/products', product.id, 'edit']"
-            (remove)="remove(product)"
-          />
-        }
+        <div class="card-end">
+          @if (isAdmin) {
+            <app-row-actions
+              [label]="product.name"
+              [editLink]="['/products', product.id, 'edit']"
+              (remove)="remove(product)"
+            />
+          }
+          <mat-icon fontSet="material-symbols-outlined" class="row-chevron" aria-hidden="true"
+            >chevron_right</mat-icon
+          >
+        </div>
       </li>
     }
   </ul>
@@ -96,7 +119,7 @@
     </div>
   }
 
-  @if (totalCount() > pageSizeOptions[0]) {
+  @if (totalCount() > 0) {
     <mat-paginator
       [length]="totalCount()"
       [pageSize]="pageSize()"

@@ -1,15 +1,17 @@
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { EMPTY, catchError, finalize } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { SpanishPaginatorIntl } from '../../../core/layout/paginator-intl';
 import { NotificationService } from '../../../core/notifications/notification.service';
 import { RowActions } from '../../../shared/row-actions/row-actions';
 import { SearchField } from '../../../shared/search-field/search-field';
+import { SkeletonRows } from '../../../shared/skeleton-rows/skeleton-rows';
 import { Product } from '../product.models';
 import { ProductService } from '../product.service';
 
@@ -17,12 +19,14 @@ import { ProductService } from '../product.service';
   selector: 'app-product-list',
   imports: [
     MatButtonModule,
+    MatIconModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatTableModule,
     RouterLink,
     RowActions,
     SearchField,
+    SkeletonRows,
   ],
   templateUrl: './product-list.html',
   host: { class: 'page' },
@@ -31,13 +35,14 @@ import { ProductService } from '../product.service';
 export class ProductList {
   private readonly service = inject(ProductService);
   private readonly notifications = inject(NotificationService);
+  private readonly router = inject(Router);
 
   protected readonly searchField = viewChild.required(SearchField);
 
   protected readonly isAdmin = inject(AuthService).isAdmin();
   protected readonly columns = this.isAdmin
-    ? ['code', 'name', 'description', 'attributes', 'actions']
-    : ['code', 'name', 'description', 'attributes'];
+    ? ['code', 'name', 'description', 'attributes', 'actions', 'chevron']
+    : ['code', 'name', 'description', 'attributes', 'chevron'];
   protected readonly pageSizeOptions = [5, 10, 25, 50];
   protected readonly products = signal<Product[]>([]);
   protected readonly loading = signal(true);
@@ -49,6 +54,14 @@ export class ProductList {
 
   constructor() {
     this.load();
+  }
+
+  protected open(event: MouseEvent, product: Product): void {
+    if ((event.target as HTMLElement).closest('a, button')) {
+      return;
+    }
+
+    this.router.navigate(['/products', product.id]);
   }
 
   protected onPage(event: PageEvent): void {

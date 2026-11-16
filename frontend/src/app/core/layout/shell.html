@@ -1,5 +1,7 @@
 <mat-toolbar>
   <span>Inventario</span>
+  <a mat-button routerLink="/products">Productos</a>
+  <a mat-button routerLink="/suppliers">Proveedores</a>
   <span class="spacer"></span>
   <span class="user">{{ auth.email() }} · {{ auth.role() }}</span>
   <button mat-button (click)="logout()">Salir</button>

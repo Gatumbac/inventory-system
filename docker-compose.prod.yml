@@ -6,6 +6,8 @@ services:
   api:
     ports: !reset []
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Swagger__Enabled: "true"
       Cors__AllowedOrigins__0: https://${SITE_HOST:?SITE_HOST is required}
     restart: unless-stopped
 

@@ -1,13 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, finalize } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
+import { SpanishPaginatorIntl } from '../../../core/layout/paginator-intl';
 import { NotificationService } from '../../../core/notifications/notification.service';
+import { RowActions } from '../../../shared/row-actions/row-actions';
+import { SearchField } from '../../../shared/search-field/search-field';
 import { Product } from '../product.models';
 import { ProductService } from '../product.service';
 
@@ -15,18 +17,22 @@ import { ProductService } from '../product.service';
   selector: 'app-product-list',
   imports: [
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     MatTableModule,
     RouterLink,
+    RowActions,
+    SearchField,
   ],
   templateUrl: './product-list.html',
-  styleUrl: './product-list.scss',
+  host: { class: 'page' },
+  providers: [{ provide: MatPaginatorIntl, useClass: SpanishPaginatorIntl }],
 })
 export class ProductList {
   private readonly service = inject(ProductService);
   private readonly notifications = inject(NotificationService);
+
+  protected readonly searchField = viewChild.required(SearchField);
 
   protected readonly isAdmin = inject(AuthService).isAdmin();
   protected readonly columns = this.isAdmin
@@ -35,6 +41,7 @@ export class ProductList {
   protected readonly pageSizeOptions = [5, 10, 25, 50];
   protected readonly products = signal<Product[]>([]);
   protected readonly loading = signal(true);
+  protected readonly failed = signal(false);
   protected readonly page = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly search = signal('');
@@ -75,10 +82,14 @@ export class ProductList {
 
   private load(): void {
     this.loading.set(true);
+    this.failed.set(false);
     this.service
       .list(this.page(), this.pageSize(), this.search())
       .pipe(
-        catchError(() => EMPTY),
+        catchError(() => {
+          this.failed.set(true);
+          return EMPTY;
+        }),
         finalize(() => this.loading.set(false)),
       )
       .subscribe((result) => {

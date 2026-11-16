@@ -2,7 +2,10 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <mat-dialog-content>
     @if (existing) {
-      <p class="supplier-name">Proveedor: {{ existing.supplierName }}</p>
+      <div class="supplier-readonly">
+        <span class="meta">Proveedor</span>
+        <span class="supplier-name">{{ existing.supplierName }}</span>
+      </div>
     } @else {
       <app-supplier-select [control]="form.controls.supplier" />
     }

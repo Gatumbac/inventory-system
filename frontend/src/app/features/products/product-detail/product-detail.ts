@@ -2,11 +2,13 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, catchError, finalize } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { NotificationService } from '../../../core/notifications/notification.service';
+import { RowActions } from '../../../shared/row-actions/row-actions';
 import { Product } from '../product.models';
 import { ProductService } from '../product.service';
 import { ProductSupplier } from '../product-supplier.models';
@@ -15,9 +17,17 @@ import { ProductSupplierDialog } from '../product-supplier-dialog/product-suppli
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CurrencyPipe, MatButtonModule, MatTableModule, RouterLink],
+  imports: [
+    CurrencyPipe,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatTableModule,
+    RouterLink,
+    RowActions,
+  ],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.scss',
+  host: { class: 'page' },
 })
 export class ProductDetail {
   private readonly products = inject(ProductService);

@@ -1,31 +1,11 @@
-:host {
-  display: block;
-  padding: 16px;
-}
-
-.header {
+.title-block {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--app-space-1);
+  min-width: 0;
 }
 
-.lots-header {
-  margin-top: 24px;
-}
-
-.code {
-  margin-top: 0;
-}
-
-.table-container {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-}
-
-.empty {
-  text-align: center;
-  padding: 24px;
+.description {
+  max-width: 70ch;
+  margin: 0;
 }

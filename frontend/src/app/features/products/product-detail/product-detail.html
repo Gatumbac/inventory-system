@@ -1,63 +1,109 @@
 @if (product(); as product) {
-  <div class="header">
-    <a mat-button routerLink="/products">← Productos</a>
-    @if (isAdmin) {
-      <a mat-flat-button [routerLink]="['/products', id, 'edit']">Editar producto</a>
-    }
-  </div>
+  <a mat-button class="back" routerLink="/products">← Productos</a>
 
-  <h2>{{ product.name }}</h2>
-  <p class="code">Código: {{ product.code }}</p>
+  <header class="page-header">
+    <div class="title-block">
+      <h1>{{ product.name }}</h1>
+      <span class="meta numeric">{{ product.code }}</span>
+    </div>
+    @if (isAdmin) {
+      <a mat-stroked-button [routerLink]="['/products', id, 'edit']">Editar producto</a>
+    }
+  </header>
+
   @if (product.description) {
-    <p>{{ product.description }}</p>
-  }
-  @for (attribute of product.attributes; track attribute.name) {
-    <div>{{ attribute.name }}: {{ attribute.value }}</div>
+    <p class="description">{{ product.description }}</p>
   }
 
-  <div class="header lots-header">
-    <h3>Proveedores y lotes</h3>
-    @if (isAdmin) {
-      <button mat-flat-button (click)="openDialog()">Agregar</button>
-    }
-  </div>
-
-  <div class="table-container">
-    <table mat-table [dataSource]="lots()">
-      <ng-container matColumnDef="supplierName">
-        <th mat-header-cell *matHeaderCellDef>Proveedor</th>
-        <td mat-cell *matCellDef="let lot">{{ lot.supplierName }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="lotNumber">
-        <th mat-header-cell *matHeaderCellDef>Lote</th>
-        <td mat-cell *matCellDef="let lot">{{ lot.lotNumber ?? '—' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef>Precio</th>
-        <td mat-cell *matCellDef="let lot">{{ lot.price | currency }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="stock">
-        <th mat-header-cell *matHeaderCellDef>Stock</th>
-        <td mat-cell *matCellDef="let lot">{{ lot.stock }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Acciones</th>
-        <td mat-cell *matCellDef="let lot">
-          <button mat-button (click)="openDialog(lot)">Editar</button>
-          <button mat-button (click)="remove(lot)">Eliminar</button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="columns"></tr>
-      <tr mat-row *matRowDef="let row; columns: columns"></tr>
-    </table>
-  </div>
-
-  @if (!loadingLots() && lots().length === 0) {
-    <p class="empty">Este producto no tiene proveedores</p>
+  @if (product.attributes.length > 0) {
+    <dl class="attributes">
+      @for (attribute of product.attributes; track attribute.name) {
+        <div>
+          <dt>{{ attribute.name }}</dt>
+          <dd>{{ attribute.value }}</dd>
+        </div>
+      }
+    </dl>
   }
+
+  <section>
+    <div class="section-header">
+      <h2>Proveedores y lotes</h2>
+      @if (isAdmin) {
+        <button mat-flat-button (click)="openDialog()">Agregar lote</button>
+      }
+    </div>
+
+    <div class="data-surface">
+      @if (loadingLots()) {
+        <mat-progress-bar class="loading-bar" mode="indeterminate" aria-label="Cargando" />
+      }
+
+      <table mat-table class="data-table" [dataSource]="lots()">
+        <ng-container matColumnDef="supplierName">
+          <th mat-header-cell *matHeaderCellDef>Proveedor</th>
+          <td mat-cell *matCellDef="let lot" class="cell-name">{{ lot.supplierName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lotNumber">
+          <th mat-header-cell *matHeaderCellDef>Lote</th>
+          <td mat-cell *matCellDef="let lot" class="numeric">{{ lot.lotNumber ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef class="cell-numeric">Precio</th>
+          <td mat-cell *matCellDef="let lot" class="cell-numeric">{{ lot.price | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef class="cell-numeric">Stock</th>
+          <td mat-cell *matCellDef="let lot" class="cell-numeric">{{ lot.stock }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="cell-actions"></th>
+          <td mat-cell *matCellDef="let lot" class="cell-actions">
+            <app-row-actions
+              [label]="lot.supplierName"
+              (edit)="openDialog(lot)"
+              (remove)="remove(lot)"
+            />
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+
+      <ul class="card-list">
+        @for (lot of lots(); track lot.id) {
+          <li>
+            <div class="card-main">
+              <span class="card-title">{{ lot.supplierName }}</span>
+              @if (lot.lotNumber) {
+                <span class="meta numeric">Lote {{ lot.lotNumber }}</span>
+              }
+              <span class="numeric">{{ lot.price | currency }} · {{ lot.stock }} en stock</span>
+            </div>
+            @if (isAdmin) {
+              <app-row-actions
+                [label]="lot.supplierName"
+                (edit)="openDialog(lot)"
+                (remove)="remove(lot)"
+              />
+            }
+          </li>
+        }
+      </ul>
+
+      @if (!loadingLots() && lots().length === 0) {
+        <div class="empty-state">
+          <p class="empty-title">Este producto aún no tiene proveedores</p>
+          @if (isAdmin) {
+            <p class="meta">Agrega el primer lote con el botón de arriba.</p>
+          }
+        </div>
+      }
+    </div>
+  </section>
 }

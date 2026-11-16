@@ -1,40 +1,40 @@
-<div class="header">
-  <h2>Productos</h2>
+<header class="page-header">
+  <h1>Productos</h1>
   @if (isAdmin) {
     <a mat-flat-button routerLink="/products/new">Nuevo producto</a>
   }
-</div>
+</header>
 
-<div class="search">
-  <mat-form-field appearance="outline">
-    <mat-label>Buscar por código o nombre</mat-label>
-    <input matInput #searchInput (keyup.enter)="onSearch(searchInput.value)" />
-  </mat-form-field>
-  <button mat-flat-button (click)="onSearch(searchInput.value)">Buscar</button>
-</div>
+<app-search-field label="Buscar por código o nombre" (search)="onSearch($event)" />
 
-<div class="table-container">
-  <table mat-table [dataSource]="products()">
+<div class="data-surface">
+  @if (loading()) {
+    <mat-progress-bar class="loading-bar" mode="indeterminate" aria-label="Cargando" />
+  }
+
+  <table mat-table class="data-table" [dataSource]="products()">
     <ng-container matColumnDef="code">
       <th mat-header-cell *matHeaderCellDef>Código</th>
-      <td mat-cell *matCellDef="let product">{{ product.code }}</td>
+      <td mat-cell *matCellDef="let product" class="numeric">{{ product.code }}</td>
     </ng-container>
 
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Nombre</th>
-      <td mat-cell *matCellDef="let product">
+      <td mat-cell *matCellDef="let product" class="cell-name">
         <a [routerLink]="['/products', product.id]">{{ product.name }}</a>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef>Descripción</th>
-      <td mat-cell *matCellDef="let product">{{ product.description }}</td>
+      <td mat-cell *matCellDef="let product">
+        <span class="cell-clamp" [attr.title]="product.description">{{ product.description }}</span>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="attributes">
       <th mat-header-cell *matHeaderCellDef>Atributos</th>
-      <td mat-cell *matCellDef="let product">
+      <td mat-cell *matCellDef="let product" class="meta">
         @for (attribute of product.attributes; track attribute.name) {
           <div>{{ attribute.name }}: {{ attribute.value }}</div>
         }
@@ -42,26 +42,67 @@
     </ng-container>
 
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Acciones</th>
-      <td mat-cell *matCellDef="let product">
-        <a mat-button [routerLink]="['/products', product.id, 'edit']">Editar</a>
-        <button mat-button (click)="remove(product)">Eliminar</button>
+      <th mat-header-cell *matHeaderCellDef class="cell-actions"></th>
+      <td mat-cell *matCellDef="let product" class="cell-actions">
+        <app-row-actions
+          [label]="product.name"
+          [editLink]="['/products', product.id, 'edit']"
+          (remove)="remove(product)"
+        />
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
     <tr mat-row *matRowDef="let row; columns: columns"></tr>
   </table>
+
+  <ul class="card-list">
+    @for (product of products(); track product.id) {
+      <li>
+        <div class="card-main">
+          <a class="card-title" [routerLink]="['/products', product.id]">{{ product.name }}</a>
+          <span class="meta numeric">{{ product.code }}</span>
+          @if (product.description) {
+            <p class="card-desc">{{ product.description }}</p>
+          }
+          @for (attribute of product.attributes; track attribute.name) {
+            <span class="meta">{{ attribute.name }}: {{ attribute.value }}</span>
+          }
+        </div>
+        @if (isAdmin) {
+          <app-row-actions
+            [label]="product.name"
+            [editLink]="['/products', product.id, 'edit']"
+            (remove)="remove(product)"
+          />
+        }
+      </li>
+    }
+  </ul>
+
+  @if (!loading() && !failed() && totalCount() === 0) {
+    <div class="empty-state">
+      @if (search()) {
+        <p class="empty-title">Sin resultados para «{{ search() }}»</p>
+        <p class="meta">Revisa la ortografía o prueba con otro código o nombre.</p>
+        <button mat-stroked-button (click)="searchField().clear()">Limpiar búsqueda</button>
+      } @else {
+        <p class="empty-title">Aún no hay productos</p>
+        @if (isAdmin) {
+          <p class="meta">Crea el primero para empezar a registrar proveedores y lotes.</p>
+          <a mat-stroked-button routerLink="/products/new">Nuevo producto</a>
+        }
+      }
+    </div>
+  }
+
+  @if (totalCount() > pageSizeOptions[0]) {
+    <mat-paginator
+      [length]="totalCount()"
+      [pageSize]="pageSize()"
+      [pageIndex]="page() - 1"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPage($event)"
+    />
+  }
 </div>
-
-@if (!loading() && totalCount() === 0) {
-  <p class="empty">No hay productos</p>
-}
-
-<mat-paginator
-  [length]="totalCount()"
-  [pageSize]="pageSize()"
-  [pageIndex]="page() - 1"
-  [pageSizeOptions]="pageSizeOptions"
-  (page)="onPage($event)"
-/>

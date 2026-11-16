@@ -1,13 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, finalize } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
+import { SpanishPaginatorIntl } from '../../../core/layout/paginator-intl';
 import { NotificationService } from '../../../core/notifications/notification.service';
+import { RowActions } from '../../../shared/row-actions/row-actions';
+import { SearchField } from '../../../shared/search-field/search-field';
 import { Supplier } from '../supplier.models';
 import { SupplierService } from '../supplier.service';
 
@@ -15,18 +17,22 @@ import { SupplierService } from '../supplier.service';
   selector: 'app-supplier-list',
   imports: [
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     MatTableModule,
     RouterLink,
+    RowActions,
+    SearchField,
   ],
   templateUrl: './supplier-list.html',
-  styleUrl: './supplier-list.scss',
+  host: { class: 'page' },
+  providers: [{ provide: MatPaginatorIntl, useClass: SpanishPaginatorIntl }],
 })
 export class SupplierList {
   private readonly service = inject(SupplierService);
   private readonly notifications = inject(NotificationService);
+
+  protected readonly searchField = viewChild.required(SearchField);
 
   protected readonly isAdmin = inject(AuthService).isAdmin();
   protected readonly columns = this.isAdmin
@@ -35,6 +41,7 @@ export class SupplierList {
   protected readonly pageSizeOptions = [5, 10, 25, 50];
   protected readonly suppliers = signal<Supplier[]>([]);
   protected readonly loading = signal(true);
+  protected readonly failed = signal(false);
   protected readonly page = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly search = signal('');
@@ -75,10 +82,14 @@ export class SupplierList {
 
   private load(): void {
     this.loading.set(true);
+    this.failed.set(false);
     this.service
       .list(this.page(), this.pageSize(), this.search())
       .pipe(
-        catchError(() => EMPTY),
+        catchError(() => {
+          this.failed.set(true);
+          return EMPTY;
+        }),
         finalize(() => this.loading.set(false)),
       )
       .subscribe((result) => {

@@ -171,11 +171,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 1,
+                            Description = "Acceso total: puede crear, editar y eliminar",
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
+                            Description = "Solo lectura",
                             Name = "Viewer"
                         });
                 });

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261115222315_InitialCreate")]
+    [Migration("20261116004308_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -174,11 +174,13 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = 1,
+                            Description = "Acceso total: puede crear, editar y eliminar",
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
+                            Description = "Solo lectura",
                             Name = "Viewer"
                         });
                 });

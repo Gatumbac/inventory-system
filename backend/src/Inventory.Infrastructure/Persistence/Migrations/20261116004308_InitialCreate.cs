@@ -148,8 +148,8 @@ namespace Inventory.Infrastructure.Persistence.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, null, "Admin" },
-                    { 2, null, "Viewer" }
+                    { 1, "Acceso total: puede crear, editar y eliminar", "Admin" },
+                    { 2, "Solo lectura", "Viewer" }
                 });
 
             migrationBuilder.CreateIndex(

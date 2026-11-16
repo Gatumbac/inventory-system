@@ -1,5 +1,7 @@
 using Inventory.Core.Abstractions;
+using Inventory.Core.Dtos;
 using Inventory.Core.Entities;
+using Inventory.Core.Results;
 
 namespace Inventory.Core.Tests.Fakes;
 
@@ -24,10 +26,17 @@ public class FakeSupplierRepository : ISupplierRepository
         return supplier;
     }
 
-    public Task<IReadOnlyList<Supplier>> GetAllAsync()
+    public Task<PagedResult<Supplier>> GetPagedAsync(SupplierFilterRequest filterRequest)
     {
-        IReadOnlyList<Supplier> suppliers = Suppliers.ToList();
-        return Task.FromResult(suppliers);
+        var page = new PagedResult<Supplier>()
+        {
+            Items = Suppliers.ToList(),
+            Page = filterRequest.Page,
+            PageSize = filterRequest.PageSize,
+            TotalCount = Suppliers.Count
+        };
+
+        return Task.FromResult(page);
     }
 
     public Task<Supplier?> GetByIdAsync(int id)

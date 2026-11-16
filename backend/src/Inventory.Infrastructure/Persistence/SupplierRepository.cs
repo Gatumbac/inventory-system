@@ -1,5 +1,7 @@
 using Inventory.Core.Abstractions;
+using Inventory.Core.Dtos;
 using Inventory.Core.Entities;
+using Inventory.Core.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Infrastructure.Persistence;
@@ -13,12 +15,26 @@ public class SupplierRepository : ISupplierRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<Supplier>> GetAllAsync()
+    public async Task<PagedResult<Supplier>> GetPagedAsync(SupplierFilterRequest filterRequest)
     {
-        return await _context.Suppliers
-            .AsNoTracking()
+        var query = _context.Suppliers.AsNoTracking();
+
+        var suppliers = ApplySearch(query, filterRequest.Search)
             .OrderBy(s => s.Name)
-            .ToListAsync();
+            .ThenBy(s => s.Id);
+
+        return await PagedQuery.ToPagedAsync(suppliers, filterRequest);
+    }
+
+    private static IQueryable<Supplier> ApplySearch(IQueryable<Supplier> query, string? search)
+    {
+        var term = search?.Trim();
+        if (string.IsNullOrEmpty(term))
+        {
+            return query;
+        }
+
+        return query.Where(s => s.Name.Contains(term));
     }
 
     public async Task<Supplier?> GetByIdAsync(int id)

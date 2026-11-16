@@ -1,10 +1,12 @@
+using Inventory.Core.Dtos;
 using Inventory.Core.Entities;
+using Inventory.Core.Results;
 
 namespace Inventory.Core.Abstractions;
 
 public interface ISupplierRepository
 {
-    Task<IReadOnlyList<Supplier>> GetAllAsync();
+    Task<PagedResult<Supplier>> GetPagedAsync(SupplierFilterRequest filterRequest);
     Task<Supplier?> GetByIdAsync(int id);
     Task<Supplier?> GetByIdForUpdateAsync(int id);
     Task<bool> ExistsAsync(int id);

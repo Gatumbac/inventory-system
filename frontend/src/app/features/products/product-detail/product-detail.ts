@@ -45,11 +45,13 @@ export class ProductDetail {
   protected readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
   protected readonly isAdmin = inject(AuthService).isAdmin();
   protected readonly columns = this.isAdmin
-    ? ['supplierName', 'lotNumber', 'price', 'stock', 'actions']
-    : ['supplierName', 'lotNumber', 'price', 'stock'];
+    ? ['supplierName', 'lotNumber', 'price', 'stock', 'alert', 'actions']
+    : ['supplierName', 'lotNumber', 'price', 'stock', 'alert'];
   protected readonly product = signal<Product | null>(null);
   protected readonly lots = signal<ProductSupplier[]>([]);
   protected readonly loadingLots = signal(true);
+  protected readonly minTreshold = 10;
+  protected readonly warningTreshold = 50; 
 
   constructor() {
     this.products

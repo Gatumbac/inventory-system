@@ -4,40 +4,44 @@
     Productos
   </a>
 
-  <header class="page-header">
-    <div class="title-block">
-      <h1>{{ product.name }}</h1>
-      <span class="meta numeric">{{ product.code }}</span>
-    </div>
-    @if (isAdmin) {
-      <a mat-stroked-button [routerLink]="['/products', id, 'edit']">Editar producto</a>
-    }
-  </header>
+  <section class="panel">
+    <header class="panel-header">
+      <div class="panel-heading">
+        <h1>{{ product.name }}</h1>
+        <span class="meta numeric">{{ product.code }}</span>
+      </div>
+      @if (isAdmin) {
+        <a mat-stroked-button [routerLink]="['/products', id, 'edit']"
+          ><mat-icon fontSet="material-symbols-outlined">edit</mat-icon>Editar producto</a
+        >
+      }
+    </header>
 
-  @if (product.description) {
-    <p class="description">{{ product.description }}</p>
-  }
-
-  @if (product.attributes.length > 0) {
-    <dl class="attributes">
+    <dl class="panel-body detail-fields">
+      <div class="detail-field">
+        <dt>Descripción</dt>
+        <dd>{{ product.description || '—' }}</dd>
+      </div>
       @for (attribute of product.attributes; track attribute.name) {
-        <div>
+        <div class="detail-field">
           <dt>{{ attribute.name }}</dt>
           <dd>{{ attribute.value }}</dd>
         </div>
       }
     </dl>
-  }
+  </section>
 
-  <section>
-    <div class="section-header">
-      <h2>Proveedores y lotes</h2>
+  <section class="panel">
+    <header class="panel-header">
+      <h2 class="panel-title">Proveedores y lotes</h2>
       @if (isAdmin) {
-        <button mat-flat-button (click)="openDialog()">Agregar lote</button>
+        <button mat-flat-button (click)="openDialog()">
+          <mat-icon fontSet="material-symbols-outlined">add</mat-icon>Agregar lote
+        </button>
       }
-    </div>
+    </header>
 
-    <div class="data-surface">
+    <div>
       @if (loadingLots() && lots().length > 0) {
         <mat-progress-bar class="loading-bar" mode="indeterminate" aria-label="Cargando" />
       }
@@ -104,7 +108,7 @@
       </ul>
 
       @if (!loadingLots() && lots().length === 0) {
-        <div class="empty-state">
+        <div class="empty-state compact">
           <p class="empty-title">Este producto aún no tiene proveedores</p>
           @if (isAdmin) {
             <p class="meta">Agrega el primer lote con el botón de arriba.</p>
@@ -114,19 +118,31 @@
     </div>
   </section>
 } @else {
-  <div class="detail-skeleton" role="status" aria-label="Cargando">
+  <div role="status" aria-label="Cargando">
     <span class="skeleton sk-back"></span>
-    <span class="skeleton sk-title"></span>
-    <span class="skeleton sk-code"></span>
-    <span class="skeleton sk-line"></span>
-    <span class="skeleton sk-line short"></span>
-    <section>
-      <div class="section-header">
-        <span class="skeleton sk-section"></span>
+    <section class="panel">
+      <header class="panel-header">
+        <div class="panel-heading">
+          <span class="skeleton sk-title"></span>
+          <span class="skeleton sk-code"></span>
+        </div>
+      </header>
+      <div class="panel-body detail-fields">
+        <div class="detail-field">
+          <span class="detail-label">Descripción</span>
+          <span class="skeleton sk-line"></span>
+        </div>
+        <div class="detail-field">
+          <span class="skeleton sk-label"></span>
+          <span class="skeleton sk-line short"></span>
+        </div>
       </div>
-      <div class="data-surface">
-        <app-skeleton-rows [widths]="[30, 20, 15, 10]" [rows]="3" />
-      </div>
+    </section>
+    <section class="panel">
+      <header class="panel-header">
+        <h2 class="panel-title">Proveedores y lotes</h2>
+      </header>
+      <app-skeleton-rows [widths]="[30, 20, 15, 10]" [rows]="3" />
     </section>
   </div>
 }

@@ -1,28 +1,26 @@
-.title-block {
-  display: flex;
-  flex-direction: column;
-  gap: var(--app-space-1);
-  min-width: 0;
-}
-
-.description {
-  max-width: 70ch;
+h1 {
   margin: 0;
+  font: var(--mat-sys-title-large);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-.detail-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--app-space-3);
+.back {
+  margin-bottom: var(--app-space-3);
+}
+
+.panel + .panel {
+  margin-top: var(--app-space-5);
 }
 
 .sk-back {
   width: 90px;
   height: 20px;
+  margin-bottom: var(--app-space-3);
 }
 
 .sk-title {
-  width: 40%;
+  width: 220px;
   height: 28px;
 }
 
@@ -31,16 +29,16 @@
   height: 14px;
 }
 
+.sk-label {
+  flex: 0 0 112px;
+  height: 14px;
+}
+
 .sk-line {
-  width: 70%;
+  width: 40%;
   height: 14px;
 
   &.short {
-    width: 45%;
+    width: 20%;
   }
-}
-
-.sk-section {
-  width: 220px;
-  height: 20px;
 }

@@ -4,11 +4,11 @@ Product inventory system: Angular, .NET 10 and SQL Server. Users log in with JWT
 
 ## Screenshots
 
-![Login](frontend/docs/ui/login.png)
+![Home dashboard](frontend/docs/ui/dashboard.png)
 
 ![Products list](frontend/docs/ui/products_list.png)
 
-![Product detail with suppliers and lots](frontend/docs/ui/product_detail.png)
+![Price matrix by supplier](frontend/docs/ui/price_matrix.png)
 
 ## Run with Docker
 

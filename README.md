@@ -54,6 +54,20 @@ Expected endpoints:
 | API      | http://localhost:8080         |
 | Swagger  | http://localhost:8080/swagger |
 
+### Running the API in Docker
+
+The `api` service builds `backend/Dockerfile` and connects to the `db` service. Migrations are not applied automatically, so run them once from the host (requires the .NET SDK) after the database is up:
+
+```bash
+docker compose up -d db
+cd backend
+dotenv -e ../.env -- dotnet ef database update --project src/Inventory.Infrastructure --startup-project src/Inventory.Api
+cd ..
+docker compose up --build api
+```
+
+Until migrations are applied, login and the product endpoints fail because the schema and seed data do not exist.
+
 ## Configuration
 
 Settings are read from environment variables defined in `.env` (not committed). Use `.env.example` as a template.

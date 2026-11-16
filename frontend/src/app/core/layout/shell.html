@@ -26,6 +26,12 @@
         <mat-icon fontSet="material-symbols-outlined">local_shipping</mat-icon>
         Proveedores
       </a>
+      @if (auth.isAdmin()) {
+        <a routerLink="/users" routerLinkActive="active" (click)="navOpen.set(false)">
+          <mat-icon fontSet="material-symbols-outlined">group</mat-icon>
+          Usuarios
+        </a>
+      }
     </nav>
 
     <button class="user" [matMenuTriggerFor]="userMenu">

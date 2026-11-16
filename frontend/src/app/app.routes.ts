@@ -54,6 +54,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/suppliers/supplier-form/supplier-form').then((m) => m.SupplierForm),
       },
+      {
+        path: 'users',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/users/user-list/user-list').then((m) => m.UserList),
+      },
+      {
+        path: 'users/new',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/users/user-form/user-form').then((m) => m.UserForm),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

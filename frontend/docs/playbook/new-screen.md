@@ -1,6 +1,6 @@
 # New CRUD screen
 
-**When:** the backend has a new resource ([backend/new-resource.md](../backend/new-resource.md)). Example: categories at `api/categories`.
+**When:** the backend has a new resource ([backend/new-resource.md](../../../backend/docs/playbook/new-resource.md)). Example: categories at `api/categories`.
 
 ## 1. Copy and rename
 

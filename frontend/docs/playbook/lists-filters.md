@@ -10,7 +10,7 @@ How a list works today (`product-list.ts`, `supplier-list.ts`):
 
 ## A. Add a filter (dropdown)
 
-**When:** the backend accepts `?supplierId=` ([backend/lists-filters-sorting.md](../backend/lists-filters-sorting.md)).
+**When:** the backend accepts `?supplierId=` ([backend/lists-filters-sorting.md](../../../backend/docs/playbook/lists-filters-sorting.md)).
 
 ### 1. Service: `product.service.ts`
 
@@ -105,7 +105,7 @@ The empty state checks `search()`. With filters, show "Sin resultados" when any 
 
 ## C. Sorting with the table headers
 
-Backend with `sortBy` and `descending` ([backend/lists-filters-sorting.md](../backend/lists-filters-sorting.md#c-sorting-chosen-by-the-client)).
+Backend with `sortBy` and `descending` ([backend/lists-filters-sorting.md](../../../backend/docs/playbook/lists-filters-sorting.md#c-sorting-chosen-by-the-client)).
 
 ```html
 <table mat-table matSort (matSortChange)="onSort($event)" …>

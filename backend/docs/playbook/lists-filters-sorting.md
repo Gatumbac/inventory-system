@@ -117,4 +117,4 @@ Use a whitelist (`switch` + `RegularExpression`), never a column name taken stra
 - No filter → same result as before.
 - Invalid value (`supplierId=0`) → 400.
 
-Next: [frontend/lists-filters.md](../frontend/lists-filters.md).
+Next: [frontend/lists-filters.md](../../../frontend/docs/playbook/lists-filters.md).

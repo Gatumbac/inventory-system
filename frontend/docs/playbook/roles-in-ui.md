@@ -44,7 +44,7 @@ Remember the mobile cards (`card-list`) too: they repeat the row actions inside 
 
 ## A new role (Editor)
 
-After the backend change ([backend/auth-and-roles.md](../backend/auth-and-roles.md#b-add-a-role)):
+After the backend change ([backend/auth-and-roles.md](../../../backend/docs/playbook/auth-and-roles.md#b-add-a-role)):
 
 `auth.service.ts`:
 

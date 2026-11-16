@@ -138,4 +138,4 @@ The services trim text before comparing and saving (`NormalizeName`, `NormalizeC
 - Swagger: break each rule once, check the status code and that `title` (or `errors`) has the Spanish message.
 - A unit test per rule.
 
-Next: [frontend/forms-and-validation.md](../frontend/forms-and-validation.md).
+Next: [frontend/forms-and-validation.md](../../../frontend/docs/playbook/forms-and-validation.md).

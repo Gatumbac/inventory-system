@@ -69,7 +69,7 @@ If the request explicitly asks for a physical delete: `_context.Suppliers.Remove
 
 New entities only need the two properties. Do not set them by hand.
 
-**When:** "Show the creation date in the list": add `CreatedAt` to the Response DTO and map it. The frontend formats it with `DatePipe` ([frontend/report-page.md](../frontend/report-page.md#pipes)).
+**When:** "Show the creation date in the list": add `CreatedAt` to the Response DTO and map it. The frontend formats it with `DatePipe` ([frontend/report-page.md](../../../frontend/docs/playbook/report-page.md#pipes)).
 
 ## Seed data
 

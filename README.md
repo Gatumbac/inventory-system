@@ -63,4 +63,4 @@ Deploy by hand on the VM, with `.env` in place (including `SITE_HOST`):
 - Backend decisions: [backend/docs/decisions.md](backend/docs/decisions.md)
 - Frontend decisions and architecture: [frontend/docs/decisions.md](frontend/docs/decisions.md), [frontend/docs/architecture.md](frontend/docs/architecture.md)
 - Architecture and conventions: [backend/docs/architecture/architecture.md](backend/docs/architecture/architecture.md), [backend/docs/conventions.md](backend/docs/conventions.md)
-- How to make common changes, backend and frontend: [docs/playbook/README.md](docs/playbook/README.md)
+- How to make common changes, backend and frontend: [backend/docs/playbook/README.md](backend/docs/playbook/README.md), [frontend/docs/playbook/README.md](frontend/docs/playbook/README.md)

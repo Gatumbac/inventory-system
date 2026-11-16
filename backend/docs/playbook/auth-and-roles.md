@@ -26,7 +26,7 @@ Public endpoint (no login):
 [AllowAnonymous]
 ```
 
-Always change the frontend too: hide the button and guard the route ([frontend/roles-in-ui.md](../frontend/roles-in-ui.md)).
+Always change the frontend too: hide the button and guard the route ([frontend/roles-in-ui.md](../../../frontend/docs/playbook/roles-in-ui.md)).
 
 ## B. Add a role
 

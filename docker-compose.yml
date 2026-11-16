@@ -47,5 +47,12 @@ services:
       migrate:
         condition: service_completed_successfully
 
+  web:
+    build: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+
 volumes:
   db-data:

@@ -28,6 +28,23 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/products/product-form/product-form').then((m) => m.ProductForm),
       },
+      {
+        path: 'suppliers',
+        loadComponent: () =>
+          import('./features/suppliers/supplier-list/supplier-list').then((m) => m.SupplierList),
+      },
+      {
+        path: 'suppliers/new',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/suppliers/supplier-form/supplier-form').then((m) => m.SupplierForm),
+      },
+      {
+        path: 'suppliers/:id/edit',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/suppliers/supplier-form/supplier-form').then((m) => m.SupplierForm),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

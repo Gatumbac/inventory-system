@@ -33,6 +33,11 @@ export const routes: Routes = [
           import('./features/products/product-form/product-form').then((m) => m.ProductForm),
       },
       {
+        path: 'price-matrix',
+        loadComponent: () =>
+          import('./features/products/price-matrix/price-matrix').then((m) => m.PriceMatrix),
+      },
+      {
         path: 'suppliers',
         loadComponent: () =>
           import('./features/suppliers/supplier-list/supplier-list').then((m) => m.SupplierList),

@@ -1,8 +1,3 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
 html {
@@ -13,27 +8,406 @@ html {
         primary: mat.$magenta-palette,
         tertiary: mat.$violet-palette,
       ),
-      typography: Roboto,
-      density: 0,
+      typography: (
+        plain-family: 'Inter, system-ui, sans-serif',
+        brand-family: 'Inter, system-ui, sans-serif',
+        bold-weight: 600,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+      density: -1,
     )
   );
+
+  --mat-sys-surface: oklch(98.5% 0.002 265);
+  --mat-sys-surface-container-lowest: oklch(100% 0 0);
+  --mat-sys-surface-container-low: oklch(97% 0.003 265);
+  --mat-sys-surface-container: oklch(95.5% 0.004 265);
+  --mat-sys-surface-container-high: oklch(94% 0.005 265);
+  --mat-sys-surface-container-highest: oklch(92% 0.006 265);
+  --mat-sys-on-surface: oklch(22% 0.01 265);
+  --mat-sys-on-surface-variant: oklch(46% 0.012 265);
+  --mat-sys-outline: oklch(62% 0.01 265);
+  --mat-sys-outline-variant: oklch(91% 0.005 265);
+
+  --mat-sys-primary: oklch(50% 0.17 345);
+  --mat-sys-on-primary: oklch(99% 0 0);
+  --mat-sys-primary-container: oklch(94% 0.03 345);
+  --mat-sys-on-primary-container: oklch(34% 0.12 345);
+  --mat-sys-secondary-container: oklch(94% 0.006 265);
+  --mat-sys-on-secondary-container: oklch(26% 0.01 265);
+  --mat-sys-error: oklch(52% 0.19 27);
+
+  --mat-button-filled-container-shape: 8px;
+  --mat-button-outlined-container-shape: 8px;
+  --mat-button-text-container-shape: 8px;
+  --mat-button-tonal-container-shape: 8px;
+  --mat-form-field-outlined-container-shape: 8px;
+  --mat-dialog-container-shape: 12px;
+  --mat-dialog-container-color: var(--mat-sys-surface-container-lowest);
+  --mat-dialog-subhead-weight: 600;
+  --mat-dialog-subhead-size: 18px;
+  --mat-autocomplete-background-color: var(--mat-sys-surface-container-lowest);
+  --mat-autocomplete-container-shape: 8px;
+  --mat-menu-container-shape: 8px;
+
+  --mat-snack-bar-container-color: oklch(26% 0.01 265);
+  --mat-snack-bar-supporting-text-color: oklch(97% 0.003 265);
+  --mat-snack-bar-button-color: oklch(85% 0.08 345);
+  --mat-snack-bar-container-shape: 8px;
+
+  --app-space-1: 4px;
+  --app-space-2: 8px;
+  --app-space-3: 12px;
+  --app-space-4: 16px;
+  --app-space-5: 24px;
+  --app-space-6: 32px;
+  --app-radius-control: 8px;
+  --app-radius-surface: 12px;
+  --app-sidebar-width: 232px;
+  --app-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.snack-error {
+  --mat-snack-bar-container-color: oklch(42% 0.15 27);
+  --mat-snack-bar-button-color: oklch(95% 0.03 27);
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+  -webkit-font-smoothing: antialiased;
   margin: 0;
   height: 100%;
 }
-/* You can add global styles to this file, and also import other style files */
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 2px;
+}
+
+button,
+a[mat-button],
+a[mat-flat-button],
+a[mat-icon-button] {
+  transition:
+    transform 150ms var(--app-ease),
+    background-color 150ms var(--app-ease);
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.page {
+  display: block;
+  box-sizing: border-box;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--app-space-6) var(--app-space-5);
+}
+
+.page-narrow {
+  max-width: 720px;
+}
+
+.back {
+  margin-left: calc(var(--app-space-3) * -1);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0 var(--app-space-4);
+}
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-5);
+  padding: var(--app-space-3) 0;
+  background: var(--mat-sys-surface);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-4);
+  margin-bottom: var(--app-space-5);
+
+  h1,
+  h2 {
+    margin: 0;
+    font: var(--mat-sys-title-large);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}
+
+.data-surface {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--app-radius-surface);
+  background: var(--mat-sys-surface-container-lowest);
+
+  mat-paginator {
+    --mat-paginator-container-background-color: transparent;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
+.data-table {
+  --mat-table-background-color: transparent;
+  --mat-table-header-container-height: 40px;
+  --mat-table-row-item-container-height: 52px;
+  --mat-table-row-item-outline-color: var(--mat-sys-outline-variant);
+  --mat-table-header-headline-color: var(--mat-sys-on-surface-variant);
+  --mat-table-header-headline-font: inherit;
+  --mat-table-header-headline-size: 12px;
+  --mat-table-header-headline-weight: 500;
+
+  width: 100%;
+
+  th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-low);
+  }
+
+  tr.mat-mdc-row:last-child td {
+    border-bottom: 0;
+  }
+
+  tr.mat-mdc-row:hover td {
+    background: var(--mat-sys-surface-container-low);
+  }
+
+  .cell-name {
+    font-weight: 500;
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .cell-clamp {
+    display: block;
+    max-width: 36ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cell-actions {
+    width: 56px;
+    text-align: right;
+  }
+
+  .cell-numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .numeric {
+    white-space: nowrap;
+  }
+}
+
+.loading-bar {
+  --mat-progress-bar-active-indicator-height: 2px;
+  --mat-progress-bar-track-height: 2px;
+  --mat-progress-bar-track-color: transparent;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.attributes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--app-space-4);
+  margin: var(--app-space-4) 0 0;
+
+  dt {
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-small);
+  }
+
+  dd {
+    margin: var(--app-space-1) 0 0;
+  }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-space-4);
+  margin: var(--app-space-6) 0 var(--app-space-3);
+
+  h2 {
+    margin: 0;
+    font: var(--mat-sys-title-medium);
+    font-weight: 600;
+  }
+}
+
+.card-list {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--app-space-3);
+    padding: var(--app-space-3) var(--app-space-4);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .card-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-space-1);
+    min-width: 0;
+  }
+
+  .card-title {
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .card-desc {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: var(--app-space-6) var(--app-space-4);
+  text-align: center;
+
+  p {
+    margin: 0;
+  }
+
+  .empty-title {
+    font: var(--mat-sys-title-small);
+  }
+
+  button,
+  a {
+    margin-top: var(--app-space-2);
+  }
+}
+
+.meta {
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: var(--app-space-4);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  html {
+    --mat-button-filled-container-height: 44px;
+    --mat-button-outlined-container-height: 44px;
+    --mat-button-text-container-height: 44px;
+    --mat-button-tonal-container-height: 44px;
+  }
+}
+
+@media (max-width: 960px) {
+  .data-table {
+    display: none;
+  }
+
+  .card-list {
+    display: block;
+  }
+
+  .data-surface .mat-mdc-paginator-page-size {
+    display: none;
+  }
+}
+
+@keyframes row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.data-table tr.mat-mdc-row,
+.card-list li {
+  animation: row-enter 300ms var(--app-ease) backwards;
+
+  @for $i from 2 through 8 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 60}ms;
+    }
+  }
+
+  &:nth-child(n + 9) {
+    animation-delay: 480ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

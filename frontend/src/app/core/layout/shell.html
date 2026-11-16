@@ -1,9 +1,45 @@
-<mat-toolbar>
-  <span>Inventario</span>
-  <a mat-button routerLink="/products">Productos</a>
-  <a mat-button routerLink="/suppliers">Proveedores</a>
-  <span class="spacer"></span>
-  <span class="user">{{ fullName() ?? auth.email() }} · {{ auth.role() }}</span>
-  <button mat-button (click)="logout()">Salir</button>
-</mat-toolbar>
-<router-outlet />
+<div class="shell">
+  <header class="topbar">
+    <button mat-icon-button aria-label="Abrir menú" (click)="navOpen.set(true)">
+      <mat-icon fontSet="material-symbols-outlined">menu</mat-icon>
+    </button>
+    <span class="brand">Inventario</span>
+  </header>
+
+  @if (navOpen()) {
+    <div class="backdrop" (click)="navOpen.set(false)"></div>
+  }
+
+  <aside class="sidebar" [class.open]="navOpen()">
+    <span class="brand">Inventario</span>
+
+    <nav>
+      <a routerLink="/products" routerLinkActive="active" (click)="navOpen.set(false)">
+        <mat-icon fontSet="material-symbols-outlined">inventory_2</mat-icon>
+        Productos
+      </a>
+      <a routerLink="/suppliers" routerLinkActive="active" (click)="navOpen.set(false)">
+        <mat-icon fontSet="material-symbols-outlined">local_shipping</mat-icon>
+        Proveedores
+      </a>
+    </nav>
+
+    <button class="user" [matMenuTriggerFor]="userMenu">
+      <span class="avatar" aria-hidden="true">{{ initial() }}</span>
+      <span class="identity">
+        <span class="name">{{ fullName() ?? auth.email() }}</span>
+        <span class="meta">{{ auth.role() }}</span>
+      </span>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon fontSet="material-symbols-outlined">logout</mat-icon>
+        Salir
+      </button>
+    </mat-menu>
+  </aside>
+
+  <main>
+    <router-outlet />
+  </main>
+</div>

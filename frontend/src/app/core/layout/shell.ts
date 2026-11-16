@@ -1,13 +1,21 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { EMPTY, catchError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-shell',
-  imports: [MatButtonModule, MatToolbarModule, RouterLink, RouterOutlet],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+  ],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
@@ -16,6 +24,10 @@ export class Shell {
 
   protected readonly auth = inject(AuthService);
   protected readonly fullName = signal<string | null>(null);
+  protected readonly navOpen = signal(false);
+  protected readonly initial = computed(() =>
+    (this.fullName() ?? this.auth.email() ?? '?').charAt(0).toUpperCase(),
+  );
 
   constructor() {
     this.auth

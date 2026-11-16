@@ -1,35 +1,25 @@
-:host {
-  display: block;
-  padding: 16px;
-}
-
-.form-card {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 16px;
+.no-attributes {
+  margin: 0 0 var(--app-space-3);
 }
 
 .attribute-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0 var(--app-space-3);
+  align-items: start;
 
-  mat-form-field {
-    flex: 1 1 200px;
+  button {
+    margin-top: var(--app-space-1);
   }
 }
 
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 16px;
+@media (max-width: 720px) {
+  .attribute-row {
+    grid-template-columns: 1fr auto;
+
+    button {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+  }
 }

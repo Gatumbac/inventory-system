@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -12,16 +11,9 @@ import { SupplierService } from '../supplier.service';
 
 @Component({
   selector: 'app-supplier-form',
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './supplier-form.html',
-  styleUrl: './supplier-form.scss',
+  host: { class: 'page page-narrow' },
 })
 export class SupplierForm {
   private readonly service = inject(SupplierService);

@@ -1,79 +1,39 @@
 # inventory-system
 
-Full-stack product inventory management system built with .NET, Angular, and SQL Server. Everything runs in containers.
+Product inventory system: Angular, .NET 10 and SQL Server. Users log in with JWT, and each product can have a different price and stock per supplier or lot.
 
-## Features
-
-- JWT-based login against users stored in the database
-- Product CRUD. The same product can have different prices and stock per supplier or lot number.
-- Paginated product listing page
-- Responsive UI
-
-## Tech Stack
-
-| Layer    | Technology                                             |
-| -------- | ------------------------------------------------------ |
-| Frontend | Angular 22                                             |
-| Backend  | C# .NET 10, Entity Framework Core                      |
-| Database | SQL Server                                             |
-| Auth     | JWT                                                    |
-| Docs     | Swagger / OpenAPI                                      |
-| Logging  | Serilog                                                |
-| Runtime  | Docker, Docker Compose                                 |
-
-## Project Structure
-
-```
-inventory-system/
-├── backend/    # .NET 10 Web API
-├── frontend/   # Angular 22 app
-└── README.md
-```
-
-## Prerequisites
-
-- Docker
-- Docker Compose
-
-No local .NET SDK or Node.js installation is required.
-
-## Getting Started
-
-> Compose setup is in progress; these steps will be finalized once it lands.
+## Run the API with Docker
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
-Expected endpoints:
+- API: http://localhost:8080
+- Swagger: http://localhost:8080/swagger
 
-| Service  | URL                           |
-| -------- | ----------------------------- |
-| Frontend | http://localhost:4200         |
-| API      | http://localhost:8080         |
-| Swagger  | http://localhost:8080/swagger |
+Migrations and demo data are applied automatically. The demo users come from the `Seed__*` variables in `.env`.
 
-### Running the API in Docker
-
-The `api` service builds `backend/Dockerfile` and connects to the `db` service. Migrations and seed data are applied automatically by the one-shot `migrate` service (an EF Core migration bundle built in the Dockerfile), and `api` starts only after it finishes successfully:
-
-```bash
-docker compose up --build
-```
-
-No local .NET SDK is needed. For local development with `dotnet run`, apply migrations from the host instead:
+## Local development
 
 ```bash
 docker compose up -d db
 cd backend
 dotenv -e ../.env -- dotnet ef database update --project src/Inventory.Infrastructure --startup-project src/Inventory.Api
+dotnet run --project src/Inventory.Api
 ```
 
-## Configuration
+The API listens on http://localhost:5078. For the frontend:
 
-Settings are read from environment variables defined in `.env` (not committed). Use `.env.example` as a template.
+```bash
+cd frontend
+npm install
+npm start
+```
 
-## License
+It runs on http://localhost:4200 and talks to the API on port 5078.
 
-For evaluation purposes only.
+## More
+
+- Backend decisions: [backend/docs/decisions.md](backend/docs/decisions.md)
+- Architecture and conventions: [backend/docs/architecture/architecture.md](backend/docs/architecture/architecture.md), [backend/docs/conventions.md](backend/docs/conventions.md)

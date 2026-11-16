@@ -11,6 +11,7 @@ public class FakeUserRepository : IUserRepository
 
     public List<User> Users { get; } = new List<User>();
     public List<User> Removed { get; } = new List<User>();
+    public List<User> Inactive { get; } = new List<User>();
 
     public User Seed(string name, string lastName, string email, string roleName)
     {
@@ -90,6 +91,18 @@ public class FakeUserRepository : IUserRepository
     {
         Users.Remove(user);
         Removed.Add(user);
+        return Task.CompletedTask;
+    }
+
+    public Task<User?> GetInactiveByIdForUpdateAsync(int id)
+    {
+        return Task.FromResult(Inactive.FirstOrDefault(u => u.Id == id));
+    }
+
+    public Task ReactivateAsync(User user)
+    {
+        Inactive.Remove(user);
+        Users.Add(user);
         return Task.CompletedTask;
     }
 }

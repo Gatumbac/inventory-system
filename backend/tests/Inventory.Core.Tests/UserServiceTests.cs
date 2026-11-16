@@ -1,5 +1,6 @@
 using Inventory.Core.Abstractions;
 using Inventory.Core.Dtos;
+using Inventory.Core.Entities;
 using Inventory.Core.Results;
 using Inventory.Core.Services;
 using Inventory.Core.Tests.Fakes;
@@ -80,6 +81,46 @@ public class UserServiceTests
 
         Assert.Equal(DeleteUserResult.Deleted, result);
         Assert.Single(_users.Removed);
+    }
+
+    [Fact]
+    public async Task ReactivateUser_Missing_ReturnsNotFound()
+    {
+        var result = await _service.ReactivateUserAsync(99);
+
+        Assert.Equal(ReactivateUserResult.NotFound, result);
+    }
+
+    [Fact]
+    public async Task ReactivateUser_EmailTakenByActiveUser_ReturnsDuplicateEmail()
+    {
+        var user = SeedInactive("ana@example.com");
+        _users.Seed("Ana", "Nueva", "ana@example.com", "Viewer");
+
+        var result = await _service.ReactivateUserAsync(user.Id);
+
+        Assert.Equal(ReactivateUserResult.DuplicateEmail, result);
+        Assert.Contains(user, _users.Inactive);
+    }
+
+    [Fact]
+    public async Task ReactivateUser_Inactive_Reactivates()
+    {
+        var user = SeedInactive("ana@example.com");
+
+        var result = await _service.ReactivateUserAsync(user.Id);
+
+        Assert.Equal(ReactivateUserResult.Reactivated, result);
+        Assert.Contains(user, _users.Users);
+        Assert.Empty(_users.Inactive);
+    }
+
+    private User SeedInactive(string email)
+    {
+        var user = _users.Seed("Ana", "Diaz", email, "Viewer");
+        _users.Users.Remove(user);
+        _users.Inactive.Add(user);
+        return user;
     }
 
     private static UserRequest NewRequest(string email)

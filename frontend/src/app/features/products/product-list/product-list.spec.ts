@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { PagedResult } from '../../../core/http/paged-result';
+import { ConfirmService } from '../../../shared/confirm-dialog/confirm.service';
 import { Product } from '../product.models';
 import { ProductService } from '../product.service';
 import { ProductList } from './product-list';
@@ -23,19 +24,21 @@ const page: PagedResult<Product> = {
 };
 
 describe('ProductList', () => {
-  const setup = () => {
+  const setup = (confirmed = true) => {
     localStorage.setItem('role', 'Admin');
+    const remove = vi.fn().mockReturnValue(of(undefined));
     TestBed.configureTestingModule({
       imports: [ProductList],
       providers: [
         provideRouter([]),
-        { provide: ProductService, useValue: { list: () => of(page) } },
+        { provide: ProductService, useValue: { list: () => of(page), remove } },
+        { provide: ConfirmService, useValue: { ask: () => of(confirmed) } },
       ],
     });
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const fixture = TestBed.createComponent(ProductList);
     fixture.detectChanges();
-    return { navigate, element: fixture.nativeElement as HTMLElement };
+    return { navigate, remove, fixture, element: fixture.nativeElement as HTMLElement };
   };
 
   afterEach(() => localStorage.removeItem('role'));
@@ -56,5 +59,21 @@ describe('ProductList', () => {
     kebab?.click();
 
     expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('removes the product after the user confirms', () => {
+    const { remove, fixture } = setup(true);
+
+    (fixture.componentInstance as unknown as { remove(p: Product): void }).remove(product);
+
+    expect(remove).toHaveBeenCalledWith(7);
+  });
+
+  it('keeps the product when the user cancels', () => {
+    const { remove, fixture } = setup(false);
+
+    (fixture.componentInstance as unknown as { remove(p: Product): void }).remove(product);
+
+    expect(remove).not.toHaveBeenCalled();
   });
 });

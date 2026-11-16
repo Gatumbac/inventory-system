@@ -5,10 +5,11 @@ import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/materi
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { Router, RouterLink } from '@angular/router';
-import { EMPTY, catchError, finalize } from 'rxjs';
+import { EMPTY, catchError, filter, finalize, switchMap } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { SpanishPaginatorIntl } from '../../../core/layout/paginator-intl';
 import { NotificationService } from '../../../core/notifications/notification.service';
+import { ConfirmService } from '../../../shared/confirm-dialog/confirm.service';
 import { RowActions } from '../../../shared/row-actions/row-actions';
 import { SearchField } from '../../../shared/search-field/search-field';
 import { SkeletonRows } from '../../../shared/skeleton-rows/skeleton-rows';
@@ -36,6 +37,7 @@ export class ProductList {
   private readonly service = inject(ProductService);
   private readonly notifications = inject(NotificationService);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
 
   protected readonly searchField = viewChild.required(SearchField);
 
@@ -54,6 +56,16 @@ export class ProductList {
 
   constructor() {
     this.load();
+  }
+
+  protected attributesText(product: Product, limit = product.attributes.length): string {
+    const shown = product.attributes
+      .slice(0, limit)
+      .map((attribute) => `${attribute.name}: ${attribute.value}`)
+      .join(' · ');
+    const hidden = product.attributes.length - limit;
+
+    return hidden > 0 ? `${shown} · +${hidden}` : shown;
   }
 
   protected open(event: MouseEvent, product: Product): void {
@@ -77,13 +89,18 @@ export class ProductList {
   }
 
   protected remove(product: Product): void {
-    if (!confirm(`¿Eliminar "${product.name}"?`)) {
-      return;
-    }
-
-    this.service
-      .remove(product.id)
-      .pipe(catchError(() => EMPTY))
+    this.confirm
+      .ask({
+        title: '¿Eliminar producto?',
+        message: `Se eliminará "${product.name}".`,
+        confirmLabel: 'Eliminar',
+        destructive: true,
+      })
+      .pipe(
+        filter(Boolean),
+        switchMap(() => this.service.remove(product.id)),
+        catchError(() => EMPTY),
+      )
       .subscribe(() => {
         this.notifications.success('Producto eliminado');
         if (this.products().length === 1 && this.page() > 1) {

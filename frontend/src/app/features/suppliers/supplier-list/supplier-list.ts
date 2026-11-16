@@ -1,13 +1,15 @@
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { EMPTY, catchError, finalize } from 'rxjs';
+import { EMPTY, catchError, filter, finalize, switchMap } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { SpanishPaginatorIntl } from '../../../core/layout/paginator-intl';
 import { NotificationService } from '../../../core/notifications/notification.service';
+import { ConfirmService } from '../../../shared/confirm-dialog/confirm.service';
 import { RowActions } from '../../../shared/row-actions/row-actions';
 import { SearchField } from '../../../shared/search-field/search-field';
 import { SkeletonRows } from '../../../shared/skeleton-rows/skeleton-rows';
@@ -18,6 +20,7 @@ import { SupplierService } from '../supplier.service';
   selector: 'app-supplier-list',
   imports: [
     MatButtonModule,
+    MatIconModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatTableModule,
@@ -33,6 +36,7 @@ import { SupplierService } from '../supplier.service';
 export class SupplierList {
   private readonly service = inject(SupplierService);
   private readonly notifications = inject(NotificationService);
+  private readonly confirm = inject(ConfirmService);
 
   protected readonly searchField = viewChild.required(SearchField);
 
@@ -66,13 +70,18 @@ export class SupplierList {
   }
 
   protected remove(supplier: Supplier): void {
-    if (!confirm(`¿Eliminar "${supplier.name}"?`)) {
-      return;
-    }
-
-    this.service
-      .remove(supplier.id)
-      .pipe(catchError(() => EMPTY))
+    this.confirm
+      .ask({
+        title: '¿Eliminar proveedor?',
+        message: `Se eliminará "${supplier.name}".`,
+        confirmLabel: 'Eliminar',
+        destructive: true,
+      })
+      .pipe(
+        filter(Boolean),
+        switchMap(() => this.service.remove(supplier.id)),
+        catchError(() => EMPTY),
+      )
       .subscribe(() => {
         this.notifications.success('Proveedor eliminado');
         if (this.suppliers().length === 1 && this.page() > 1) {

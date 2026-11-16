@@ -3,7 +3,7 @@
     <button mat-icon-button aria-label="Abrir menú" (click)="navOpen.set(true)">
       <mat-icon fontSet="material-symbols-outlined">menu</mat-icon>
     </button>
-    <span class="brand">Inventario</span>
+    <span class="brand">Inventory System</span>
   </header>
 
   @if (navOpen()) {
@@ -11,7 +11,7 @@
   }
 
   <aside class="sidebar" [class.open]="navOpen()">
-    <span class="brand">Inventario</span>
+    <span class="brand">Inventory System</span>
 
     <nav>
       <a routerLink="/products" routerLinkActive="active" (click)="navOpen.set(false)">

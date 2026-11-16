@@ -23,9 +23,9 @@ public class SupplierController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<PagedResult<SupplierResponse>>> GetSuppliers([FromQuery] PageRequest pageRequest)
+    public async Task<ActionResult<PagedResult<SupplierResponse>>> GetSuppliers([FromQuery] SupplierFilterRequest filterRequest)
     {
-        var response = await _supplierService.GetSuppliersAsync(pageRequest);
+        var response = await _supplierService.GetSuppliersAsync(filterRequest);
         return Ok(response);
     }
 

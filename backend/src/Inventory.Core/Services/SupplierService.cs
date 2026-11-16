@@ -14,9 +14,9 @@ public class SupplierService : ISupplierService
         _suppliers = suppliers;
     }
 
-    public async Task<PagedResult<SupplierResponse>> GetSuppliersAsync(PageRequest pageRequest)
+    public async Task<PagedResult<SupplierResponse>> GetSuppliersAsync(SupplierFilterRequest filterRequest)
     {
-        var page = await _suppliers.GetPagedAsync(pageRequest);
+        var page = await _suppliers.GetPagedAsync(filterRequest);
 
         return page.Map(s => ToSupplierResponse(s));
     }

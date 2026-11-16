@@ -15,13 +15,26 @@ public class SupplierRepository : ISupplierRepository
         _context = context;
     }
 
-    public async Task<PagedResult<Supplier>> GetPagedAsync(PageRequest pageRequest)
+    public async Task<PagedResult<Supplier>> GetPagedAsync(SupplierFilterRequest filterRequest)
     {
-        var suppliers = _context.Suppliers
-            .AsNoTracking()
+        var query = _context.Suppliers.AsNoTracking();
+
+        var suppliers = ApplySearch(query, filterRequest.Search)
             .OrderBy(s => s.Name)
             .ThenBy(s => s.Id);
-        return await PagedQuery.ToPagedAsync(suppliers, pageRequest);
+
+        return await PagedQuery.ToPagedAsync(suppliers, filterRequest);
+    }
+
+    private static IQueryable<Supplier> ApplySearch(IQueryable<Supplier> query, string? search)
+    {
+        var term = search?.Trim();
+        if (string.IsNullOrEmpty(term))
+        {
+            return query;
+        }
+
+        return query.Where(s => s.Name.Contains(term));
     }
 
     public async Task<Supplier?> GetByIdAsync(int id)

@@ -20,13 +20,13 @@ public class SupplierServiceTests
     {
         _suppliers.Seed("Acme");
         _suppliers.Seed("Globex");
-        var pageRequest = new PageRequest()
+        var filterRequest = new SupplierFilterRequest()
         {
             Page = 2,
             PageSize = 5
         };
 
-        var result = await _service.GetSuppliersAsync(pageRequest);
+        var result = await _service.GetSuppliersAsync(filterRequest);
 
         Assert.Equal(2, result.Items.Count);
         Assert.Equal("Acme", result.Items[0].Name);

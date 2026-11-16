@@ -26,13 +26,13 @@ public class FakeSupplierRepository : ISupplierRepository
         return supplier;
     }
 
-    public Task<PagedResult<Supplier>> GetPagedAsync(PageRequest pageRequest)
+    public Task<PagedResult<Supplier>> GetPagedAsync(SupplierFilterRequest filterRequest)
     {
         var page = new PagedResult<Supplier>()
         {
             Items = Suppliers.ToList(),
-            Page = pageRequest.Page,
-            PageSize = pageRequest.PageSize,
+            Page = filterRequest.Page,
+            PageSize = filterRequest.PageSize,
             TotalCount = Suppliers.Count
         };
 
